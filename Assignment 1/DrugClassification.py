@@ -12,7 +12,6 @@ plt.ylabel("Number of drugs")
 plt.xlabel("Categories of drugs")
 plt.title("Distribution of drugs")
 plt.savefig("drug-distribution.pdf")
-# plt.show()
 
 # Ordinal features will be categorized as followed: 0 = LOW, 1 = NORMAL, 2 = HIGH
 # Nominal features will be categorized as followed: 0 = FEMALE, 1 = MALE
