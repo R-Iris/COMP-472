@@ -18,6 +18,9 @@ plt.ylabel('Instances')
 plt.title('BBC Distribution')
 plt.savefig("BBC-distribution.pdf")
 
-data = sklearn.datasets.load_files('BBC', encoding='latin1')
-preprocessed = fe.text.CountVectorizer(data)
-# me.train_test_split(preprocessed, test_size=0.2, train_size=0.8, random_state=None)
+#
+data = sklearn.datasets.load_files("BBC", encoding='latin1', load_content=True)
+vectorizer = fe.text.CountVectorizer()
+vectorizer.fit(data.data)
+print(vectorizer.vocabulary_)
+# me.train_test_split(data, test_size=0.2, train_size=0.8, random_state=None)
