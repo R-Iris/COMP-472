@@ -126,7 +126,7 @@ for e in classes:
 print("\n(f)\n")
 print("\tVocabulary Size: ")
 
-print("\t"+str(len(vectorizer.get_feature_names_out())))
+print("\t"+str(len(vectorizer.get_feature_names())))
 
 
 print("\n(g)\n")
