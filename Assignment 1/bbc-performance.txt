@@ -2,8 +2,51 @@
 
 (b)
 	Confusion matrix:
-[[ 94   0   1   0   4]
- [  1  72   3   0   2]
- [  0   0  79   0   0]
- [  0   0   1 113   0]
- [  0   1   0   0  74]]
+[[ 88   1   2   0   5]
+ [  2  80   0   0   0]
+ [  1   1  82   0   0]
+ [  0   0   0 105   0]
+ [  0   0   1   0  77]]
+
+(c)
+
+	Precision, Recall, and F1-measure: 
+              precision    recall  f1-score   support
+
+           0       0.97      0.92      0.94        96
+           1       0.98      0.98      0.98        82
+           2       0.96      0.98      0.97        84
+           3       1.00      1.00      1.00       105
+           4       0.94      0.99      0.96        78
+
+    accuracy                           0.97       445
+   macro avg       0.97      0.97      0.97       445
+weighted avg       0.97      0.97      0.97       445
+
+
+(d)
+
+	Accuracy: 
+	0.9707865168539326
+	Macro-average F1: 
+	0.9699400855738457
+	Weighted-average F1: 
+	0.9706578293839974
+
+(e)
+
+	Prior Probabilities: 
+	business class prior probability : 0.2
+	entertainment class prior probability : 0.2
+	politics class prior probability : 0.2
+	sport class prior probability : 0.2
+	tech class prior probability : 0.2
+
+(f)
+
+	Vocabulary Size: 
+
+(g)
+
+	# Word Tokens in each class: 
+	29421

@@ -3,6 +3,7 @@ import os
 import sklearn.datasets
 import sklearn.feature_extraction as fe
 import sklearn.model_selection as me
+import sklearn.metrics as met
 from sklearn.naive_bayes import MultinomialNB
 import numpy as np
 import sys
@@ -54,10 +55,10 @@ print("The training set has: ", len(doc_train), "elements, it makes up", len(doc
 MultiNB = MultinomialNB()
 MultiNB.fit(doc_train, target_train)
 
-# Evaluation the MultiNB to the test set
+# Evaluating the MultiNB to the test set
 predictions = MultiNB.predict(doc_test)
 # print(predictions)  # This part sucks, makes me want to kill myself. What am I even doing?
-
+# try print(str(predictions)) and dont kys :) - Ryan
 # Writing to a file and overwriting the content
 file = open("bbc-performance.txt", "w")
 file.write("(a) ***  MultinomialNB default values, try 1 ***\n\n")
@@ -74,9 +75,56 @@ np.set_printoptions(threshold=sys.maxsize)
 temp = sys.stdout
 sys.stdout = file  # Makes the print() function write to the file with the corresponding format
 print(confusionMatrix)
+
+# Obtaining precision, recall and f1-measure of the predictions
+precRecF1 = met.classification_report(target_test, predictions)
+print("\n(c)\n")
+print("\tPrecision, Recall, and F1-measure: ")
+print(precRecF1)
+
+# Accuracy, macro-average F1 and weighted-average F1 of the predictions
+accuracy = met.accuracy_score(target_test, predictions)
+macroF1 = met.f1_score(target_test, predictions, average='macro')
+weightedF1 = met.f1_score(target_test, predictions, average='weighted')
+print("\n(d)\n")
+print("\tAccuracy: ")
+print("\t" + str(accuracy))
+print("\tMacro-average F1: ")
+print("\t" + str(macroF1))
+print("\tWeighted-average F1: ")
+print("\t" + str(weightedF1))
+
+# Prior probabilities for each class
+print("\n(e)\n")
+print("\tPrior Probabilities: ")
+
+ignore = "README.TXT"
+classes = [e for e in os.listdir("BBC") if e not in ignore]
+
+for e in classes:
+    print("\t" + e + " class prior probability : " + str(1/len(classes)))
+
+
+print("\n(f)\n")
+print("\tVocabulary Size: ")
+
+print("\t"+str(len(vectorizer.get_feature_names_out())))
+
+
+print("\n(g)\n")
+print("\t# Word Tokens in each class: ")
+
+# for e in os.listdir("BBC"):
+#     vectorizer.get_feature_names_out()
+
 sys.stdout = temp  # Putting the system output back to normal
 
-# Verifying that the system output is back to normal
-print("hi")
+
+print(precRecF1)
+print(accuracy)
+print(macroF1)
+print(weightedF1)
+
+
 
 file.close()
