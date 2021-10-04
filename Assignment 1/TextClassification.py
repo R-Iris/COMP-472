@@ -118,10 +118,9 @@ print("\tPrior Probabilities: ")
 ignore = "README.TXT"
 classes = [e for e in os.listdir("BBC") if e not in ignore]
 
-# NEEDS TO BE FIXED
-for e in classes:
-    print("\t" + e + " class prior probability : " + str(1/len(classes)))
-
+# Prior probability for each class
+for i in range(5):
+    print("\t" + classifications[i] + " class prior probability: " + str(instances[i]/totalDoc))
 
 print("\n(f)\n")
 print("\tVocabulary Size: ")
