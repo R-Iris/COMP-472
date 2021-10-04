@@ -127,12 +127,11 @@ print("\tVocabulary Size: ")
 
 print("\t"+str(len(vectorizer.get_feature_names())))
 
-
 print("\n(g)\n")
 print("\t# Word Tokens in each class: ")
 
-# for e in os.listdir("BBC"):
-#     vectorizer.get_feature_names_out()
+# Double for loop maybe?
+# First for loop to iterate over each class, second for loop to iterate over each text file in a class
 
 sys.stdout = temp  # Putting the system output back to normal
 
