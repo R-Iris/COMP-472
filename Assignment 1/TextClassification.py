@@ -65,13 +65,9 @@ MultiNB.fit(doc_train, target_train)
 
 # Evaluating the MultiNB to the test set
 predictions = MultiNB.predict(doc_test)
-<<<<<<< Updated upstream
 # predictions is a 2d array of the predicted target values
 # print(str(predictions))
 
-=======
-# print(str(predictions))
->>>>>>> Stashed changes
 # Writing to a file and overwriting the content
 file = open("bbc-performance.txt", "w")
 file.write("(a) ***  MultinomialNB default values, try 1 ***\n\n")
