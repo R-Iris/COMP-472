@@ -22,7 +22,7 @@ plt.bar(classifications, instances)
 plt.xlabel('Classification')
 plt.ylabel('Instances')
 plt.title('BBC Distribution')
-plt.savefig("BBC-distribution.pdf")
+# plt.savefig("BBC-distribution.pdf")
 
 # Loading the corpus
 data = sklearn.datasets.load_files("BBC", encoding='latin1', load_content=True)
@@ -60,11 +60,14 @@ predictions = MultiNB.predict(doc_test)
 
 # Writing to a file and overwriting the content
 file = open("bbc-performance.txt", "w")
-file.write("(a) ***  MultinomialNB default values, try 1 ***\n")
+file.write("(a) ***  MultinomialNB default values, try 1 ***\n\n")
 
 # Creating the confusion matrix
 confusionMatrix = sklearn.metrics.confusion_matrix(target_test, predictions)
 print(confusionMatrix)
+
+file.write("(b)\n")
+file.write("\tConfusion matrix:\n")
 
 # Temporarily setting the system output to the file in order to copy the matrix format to the file
 np.set_printoptions(threshold=sys.maxsize)
