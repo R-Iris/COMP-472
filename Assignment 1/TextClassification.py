@@ -18,6 +18,12 @@ instances = [len(os.listdir("BBC/business")),
              len(os.listdir("BBC/sport")),
              len(os.listdir("BBC/tech"))]
 
+totalDoc = (len(os.listdir("BBC/business")) +
+            len(os.listdir("BBC/entertainment")) +
+            len(os.listdir("BBC/politics")) +
+            len(os.listdir("BBC/sport")) +
+            len(os.listdir("BBC/tech")))
+
 # Creating a bar chart
 plt.bar(classifications, instances)
 plt.xlabel('Classification')
@@ -48,14 +54,10 @@ doc_train, doc_test, target_train, target_test = me.train_test_split(vector.toar
 
 # ! Proof that the split is done properly !
 print("Total number of document: ",
-      len(os.listdir("BBC/business")) +
-      len(os.listdir("BBC/entertainment")) +
-      len(os.listdir("BBC/politics")) +
-      len(os.listdir("BBC/sport")) +
-      len(os.listdir("BBC/tech")))
-print("The training set has: ", len(doc_train), "elements, it makes up", len(doc_train) / 2225 * 100,
+      totalDoc)
+print("The training set has: ", len(doc_train), "elements, it makes up", len(doc_train) / totalDoc * 100,
       "% of the total set"
-      "\nThe test set has: ", len(doc_test), "elements, it makes up", len(doc_test) / 2225 * 100, "% of the total set")
+      "\nThe test set has: ", len(doc_test), "elements, it makes up", len(doc_test) / totalDoc * 100, "% of the total set")
 
 # Training a multinomial Naive Bayes Classifier on the training set
 MultiNB = MultinomialNB()
@@ -63,9 +65,13 @@ MultiNB.fit(doc_train, target_train)
 
 # Evaluating the MultiNB to the test set
 predictions = MultiNB.predict(doc_test)
+<<<<<<< Updated upstream
 # predictions is a 2d array of the predicted target values
 # print(str(predictions))
 
+=======
+# print(str(predictions))
+>>>>>>> Stashed changes
 # Writing to a file and overwriting the content
 file = open("bbc-performance.txt", "w")
 file.write("(a) ***  MultinomialNB default values, try 1 ***\n\n")
@@ -140,7 +146,6 @@ print(precRecF1)
 print(accuracy)
 print(macroF1)
 print(weightedF1)
-
 
 
 file.close()
