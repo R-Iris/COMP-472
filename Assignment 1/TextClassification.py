@@ -36,11 +36,14 @@ data = sklearn.datasets.load_files("BBC", encoding='latin1', load_content=True)
 # data is a bunch of 5 attributes, data, target, target_names, DESCR, filesnames
 # The data attribute is a list of strings, with each string being the raw content of a file
 
+#for i in range(5)
+# sum(values if their target is i)
+
 # Creates a dictionary of the vocabulary of the corpus
 vectorizer = fe.text.CountVectorizer()
 # Count vectorizer seperates the words in each file into their own strings
-vectorizer.fit_transform(data.data)
-vector = vectorizer.transform(data.data)
+vector = vectorizer.fit_transform(data.data)
+# vector = vectorizer.transform(data.data)
 # Vector is the count of each word in the format of a 2d array
 # ft = vectorizer.get_feature_names_out()  # Gets the feature names, output is an array[5]
 
@@ -75,7 +78,6 @@ file.write("(a) ***  MultinomialNB default values, try 1 ***\n\n")
 # Creating the confusion matrix
 confusionMatrix = sklearn.metrics.confusion_matrix(target_test, predictions)
 # 2d array of the confusion matrix
-print(confusionMatrix)
 
 file.write("(b)\n")
 file.write("\tConfusion matrix:\n")
@@ -130,8 +132,34 @@ print("\t"+str(len(vectorizer.get_feature_names())))
 print("\n(g)\n")
 print("\t# Word Tokens in each class: ")
 
+# ?
+#businessContent =
+#businessVectorizer = fe.text.CountVectorizer()
+# businessVector = businessVectorizer.fit_transform(businessContent)
 # Double for loop maybe?
 # First for loop to iterate over each class, second for loop to iterate over each text file in a class
+
+print("\n(h)\n")
+print("\t# Word Tokens in the entire corpus: ")
+
+totalWordTokens = sum(vectorizer.vocabulary_.values())
+print("\t" + str(totalWordTokens))
+
+
+print("\n(i)\n")
+print("\t# and % of words with a frequency of zero in each class: ")
+
+# ?
+
+print("\n(j)\n")
+print("\t# and % of words with a frequency of one in the entire corpus: ")
+
+numWordsOneEntire = 0
+for k in vectorizer.vocabulary_:
+    if vectorizer.vocabulary_[k] == 1:
+        numWordsOneEntire += 1
+print("\tAmount: " + str(numWordsOneEntire))
+print("\tPercentage: " + str(numWordsOneEntire / totalWordTokens * 100) + "%")
 
 sys.stdout = temp  # Putting the system output back to normal
 

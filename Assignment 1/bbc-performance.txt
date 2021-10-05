@@ -2,45 +2,45 @@
 
 (b)
 	Confusion matrix:
-[[ 94   0   3   0   4]
- [  0  82   0   0   1]
- [  1   0  72   0   1]
- [  1   0   1 104   0]
- [  0   0   0   0  81]]
+[[95  0  2  0  1]
+ [ 0 77  2  0  2]
+ [ 1  0 93  0  0]
+ [ 0  0  1 99  0]
+ [ 0  0  0  0 72]]
 
 (c)
 
 	Precision, Recall, and F1-measure: 
               precision    recall  f1-score   support
 
-           0       0.98      0.93      0.95       101
-           1       1.00      0.99      0.99        83
-           2       0.95      0.97      0.96        74
-           3       1.00      0.98      0.99       106
-           4       0.93      1.00      0.96        81
+           0       0.99      0.97      0.98        98
+           1       1.00      0.95      0.97        81
+           2       0.95      0.99      0.97        94
+           3       1.00      0.99      0.99       100
+           4       0.96      1.00      0.98        72
 
-    accuracy                           0.97       445
-   macro avg       0.97      0.97      0.97       445
-weighted avg       0.97      0.97      0.97       445
+    accuracy                           0.98       445
+   macro avg       0.98      0.98      0.98       445
+weighted avg       0.98      0.98      0.98       445
 
 
 (d)
 
 	Accuracy: 
-	0.9730337078651685
+	0.9797752808988764
 	Macro-average F1: 
-	0.9726032039026963
+	0.979476339741864
 	Weighted-average F1: 
-	0.9730794956103803
+	0.9798187600314391
 
 (e)
 
 	Prior Probabilities: 
-	business class prior probability : 0.2
-	entertainment class prior probability : 0.2
-	politics class prior probability : 0.2
-	sport class prior probability : 0.2
-	tech class prior probability : 0.2
+	Business class prior probability: 0.2292134831460674
+	Entertainment class prior probability: 0.17348314606741572
+	Politics class prior probability: 0.18741573033707865
+	Sport class prior probability: 0.22966292134831462
+	Tech class prior probability: 0.1802247191011236
 
 (f)
 
@@ -50,3 +50,18 @@ weighted avg       0.97      0.97      0.97       445
 (g)
 
 	# Word Tokens in each class: 
+
+(h)
+
+	# Word Tokens in the entire corpus: 
+	432782910
+
+(i)
+
+	# and % of words with a frequency of zero in each class: 
+
+(j)
+
+	# and % of words with a frequency of one in the entire corpus: 
+	Amount: 1
+	Percentage: 2.310627284242809e-07%
