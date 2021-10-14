@@ -7,6 +7,7 @@ import sklearn.metrics as met
 from sklearn.naive_bayes import MultinomialNB
 import numpy as np
 import sys
+import math
 
 # the sum of all values in question 7 (g) should add up to the answer for 7 (h)
 # FIX ----------------------------- FIX -------------------------- FIX --------
@@ -59,13 +60,6 @@ vector = vectorizer.fit_transform(data.data)
 doc_train, doc_test, target_train, target_test = me.train_test_split(vector.toarray(), data.target, test_size=0.2, train_size=0.8, random_state=None)
 # train_test_split splits a list into 2, in this case, 2 arguments return 4 lists
 # doc is the words and the count of their instances, target is their class (category, file directory)
-
-# ! Proof that the split is done properly !
-print("Total number of document: ",
-      totalDoc)
-print("The training set has: ", len(doc_train), "elements, it makes up", len(doc_train) / totalDoc * 100,
-      "% of the total set"
-      "\nThe test set has: ", len(doc_test), "elements, it makes up", len(doc_test) / totalDoc * 100, "% of the total set")
 
 # Training a multinomial Naive Bayes Classifier on the training set
 MultiNB = MultinomialNB()
@@ -180,16 +174,12 @@ print("\t Amount: " + str(uniqueWords) + " Frequency: %" + str(uniqueWords/len(v
 
 print("\n(k)\n")
 print("\tour 2 favorite words (that are present in the vocabulary) and their log-prob: ")
+# P("goldeneye") = log(# of times goldeneye is seen/total # of tokens corpus)
+# P("nintendo") = log(# of times goldeneye is seen/total # of tokens corpus)
 
-
+print("\t Log-prob of goldeneye: " + str(math.log((vectorizer.vocabulary_.get('goldeneye'))/totalWordTokens)))
+print("\t Log-prob of nintendo: " + str(math.log((vectorizer.vocabulary_.get('nintendo'))/totalWordTokens)))
 
 sys.stdout = temp  # Putting the system output back to normal
-
-
-print(precRecF1)
-print(accuracy)
-print(macroF1)
-print(weightedF1)
-
 
 file.close()
