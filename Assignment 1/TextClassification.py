@@ -8,6 +8,10 @@ from sklearn.naive_bayes import MultinomialNB
 import numpy as np
 import sys
 
+# the sum of all values in question 7 (g) should add up to the answer for 7 (h)
+# FIX ----------------------------- FIX -------------------------- FIX --------
+
+
 # Array that contains the subfolder names
 classifications = ['Business', 'Entertainment', 'Politics', 'Sport', 'Tech']
 
@@ -43,6 +47,7 @@ data = sklearn.datasets.load_files("BBC", encoding='latin1', load_content=True)
 vectorizer = fe.text.CountVectorizer()
 # Count vectorizer seperates the words in each file into their own strings
 vector = vectorizer.fit_transform(data.data)
+# print(vector.toarray())
 # vector = vectorizer.transform(data.data)
 # Vector is the count of each word in the format of a 2d array
 # ft = vectorizer.get_feature_names_out()  # Gets the feature names, output is an array[5]
@@ -132,34 +137,51 @@ print("\t"+str(len(vectorizer.get_feature_names())))
 print("\n(g)\n")
 print("\t# Word Tokens in each class: ")
 
-# ?
-#businessContent =
-#businessVectorizer = fe.text.CountVectorizer()
-# businessVector = businessVectorizer.fit_transform(businessContent)
-# Double for loop maybe?
-# First for loop to iterate over each class, second for loop to iterate over each text file in a class
+classificationsIT = 0
+for i in MultiNB.feature_count_:
+    occurences = 0
+    for j in i:
+        occurences += j
+    print("\t" + str(classifications[classificationsIT] + ": " + str(occurences)))
+    classificationsIT += 1
 
 print("\n(h)\n")
 print("\t# Word Tokens in the entire corpus: ")
 
-totalWordTokens = sum(vectorizer.vocabulary_.values())
+# vectorNPArray has, for each class, keys being each word of the vocabulary, and values being the instance count for
+# each of those words
+vectorNPArray = np.array(vector.toarray())
+totalWordTokens = np.sum(vectorNPArray)
 print("\t" + str(totalWordTokens))
-
 
 print("\n(i)\n")
 print("\t# and % of words with a frequency of zero in each class: ")
 
-# ?
+classITI = 0
+for i in MultiNB.feature_count_:
+    zeroCount = 0
+    for j in i:
+        if j == 0:
+            zeroCount += 1
+    print("\t" + str(classifications[classITI] + ": " + str(zeroCount) + ", %: ") +
+          str(zeroCount/len(vectorizer.get_feature_names())*100))
+    classITI += 1
 
 print("\n(j)\n")
 print("\t# and % of words with a frequency of one in the entire corpus: ")
 
-numWordsOneEntire = 0
+# Unique words in entire corpus over the vocabulary size
+uniqueWords = 0
 for k in vectorizer.vocabulary_:
     if vectorizer.vocabulary_[k] == 1:
-        numWordsOneEntire += 1
-print("\tAmount: " + str(numWordsOneEntire))
-print("\tPercentage: " + str(numWordsOneEntire / totalWordTokens * 100) + "%")
+        print("\t Unique Word: " + str(k))
+        uniqueWords += 1
+print("\t Amount: " + str(uniqueWords) + " Frequency: %" + str(uniqueWords/len(vectorizer.get_feature_names())*100))
+
+print("\n(k)\n")
+print("\tour 2 favorite words (that are present in the vocabulary) and their log-prob: ")
+
+
 
 sys.stdout = temp  # Putting the system output back to normal
 
