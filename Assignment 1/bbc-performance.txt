@@ -2,22 +2,22 @@
 
 (b)
 	Confusion matrix:
-[[ 91   0   0   0   2]
- [  0  72   3   0   3]
- [  1   0  83   0   0]
- [  0   0   1 114   0]
- [  0   0   0   0  75]]
+[[94  0  1  0  4]
+ [ 0 77  0  0  0]
+ [ 2  1 87  0  1]
+ [ 0  0  0 97  0]
+ [ 0  0  1  0 80]]
 
 (c)
 
 	Precision, Recall, and F1-measure: 
               precision    recall  f1-score   support
 
-           0       0.99      0.98      0.98        93
-           1       1.00      0.92      0.96        78
-           2       0.95      0.99      0.97        84
-           3       1.00      0.99      1.00       115
-           4       0.94      1.00      0.97        75
+           0       0.98      0.95      0.96        99
+           1       0.99      1.00      0.99        77
+           2       0.98      0.96      0.97        91
+           3       1.00      1.00      1.00        97
+           4       0.94      0.99      0.96        81
 
     accuracy                           0.98       445
    macro avg       0.98      0.98      0.98       445
@@ -29,9 +29,9 @@ weighted avg       0.98      0.98      0.98       445
 	Accuracy: 
 	0.9775280898876404
 	Macro-average F1: 
-	0.9755838281917419
+	0.9776346079105505
 	Weighted-average F1: 
-	0.9775150860588572
+	0.9775018774739296
 
 (e)
 
@@ -50,11 +50,11 @@ weighted avg       0.98      0.98      0.98       445
 (g)
 
 	# Word Tokens in each class: 
-	Business: 133693.0
-	Entertainment: 99223.0
-	Politics: 142122.0
-	Sport: 125874.0
-	Tech: 162856.0
+	Business: 133870.0
+	Entertainment: 98681.0
+	Politics: 148169.0
+	Sport: 130155.0
+	Tech: 159505.0
 
 (h)
 
@@ -64,11 +64,266 @@ weighted avg       0.98      0.98      0.98       445
 (i)
 
 	# and % of words with a frequency of zero in each class: 
-	Business: 18692, %: 63.53285068488495
-	Entertainment: 18992, %: 64.5525305054213
-	Politics: 19591, %: 66.58849121375889
-	Sport: 20003, %: 67.9888515006288
-	Tech: 18074, %: 61.43231025458006
+	Business: 18717, %: 63.61782400326298
+	Entertainment: 19134, %: 65.0351789538085
+	Politics: 19145, %: 65.07256721389484
+	Sport: 19787, %: 67.25468202984263
+	Tech: 18356, %: 62.39080928588423
+
+(j)
+
+	# and % of words with a frequency of one in the entire corpus: 
+	 Unique Word: 000
+	 Amount: 1 Frequency: %0.0033989327351211717
+
+(k)
+
+	our 2 favorite words (that are present in the vocabulary) and their log-prob: 
+	 Log-prob of goldeneye: -4.242067739432847
+	 Log-prob of nintendo: -3.8171397679637917
+
+
+(a) ***  MultinomialNB default values, try 2 ***
+
+(b)
+	Confusion matrix:
+[[94  0  1  0  4]
+ [ 0 77  0  0  0]
+ [ 2  1 87  0  1]
+ [ 0  0  0 97  0]
+ [ 0  0  1  0 80]]
+
+(c)
+
+	Precision, Recall, and F1-measure: 
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.96        99
+           1       0.99      1.00      0.99        77
+           2       0.98      0.96      0.97        91
+           3       1.00      1.00      1.00        97
+           4       0.94      0.99      0.96        81
+
+    accuracy                           0.98       445
+   macro avg       0.98      0.98      0.98       445
+weighted avg       0.98      0.98      0.98       445
+
+
+(d)
+
+	Accuracy: 
+	0.9775280898876404
+	Macro-average F1: 
+	0.9776346079105505
+	Weighted-average F1: 
+	0.9775018774739296
+
+(e)
+
+	Prior Probabilities: 
+	Business class prior probability: 0.2292134831460674
+	Entertainment class prior probability: 0.17348314606741572
+	Politics class prior probability: 0.18741573033707865
+	Sport class prior probability: 0.22966292134831462
+	Tech class prior probability: 0.1802247191011236
+
+(f)
+
+	Vocabulary Size: 
+	29421
+
+(g)
+
+	# Word Tokens in each class: 
+	Business: 133870.0
+	Entertainment: 98681.0
+	Politics: 148169.0
+	Sport: 130155.0
+	Tech: 159505.0
+
+(h)
+
+	# Word Tokens in the entire corpus: 
+	836357
+
+(i)
+
+	# and % of words with a frequency of zero in each class: 
+	Business: 18717, %: 63.61782400326298
+	Entertainment: 19134, %: 65.0351789538085
+	Politics: 19145, %: 65.07256721389484
+	Sport: 19787, %: 67.25468202984263
+	Tech: 18356, %: 62.39080928588423
+
+(j)
+
+	# and % of words with a frequency of one in the entire corpus: 
+	 Unique Word: 000
+	 Amount: 1 Frequency: %0.0033989327351211717
+
+(k)
+
+	our 2 favorite words (that are present in the vocabulary) and their log-prob: 
+	 Log-prob of goldeneye: -4.242067739432847
+	 Log-prob of nintendo: -3.8171397679637917
+
+
+(a) ***  MultinomialNB smoothing value of 0.0001, try 3 ***
+
+(b)
+	Confusion matrix:
+[[94  0  2  0  3]
+ [ 0 77  0  0  0]
+ [ 3  1 86  0  1]
+ [ 0  0  1 96  0]
+ [ 0  0  1  0 80]]
+
+(c)
+
+	Precision, Recall, and F1-measure: 
+              precision    recall  f1-score   support
+
+           0       0.97      0.95      0.96        99
+           1       0.99      1.00      0.99        77
+           2       0.96      0.95      0.95        91
+           3       1.00      0.99      0.99        97
+           4       0.95      0.99      0.97        81
+
+    accuracy                           0.97       445
+   macro avg       0.97      0.97      0.97       445
+weighted avg       0.97      0.97      0.97       445
+
+
+(d)
+
+	Accuracy: 
+	0.9730337078651685
+	Macro-average F1: 
+	0.973504785241359
+	Weighted-average F1: 
+	0.9729896887041513
+
+(e)
+
+	Prior Probabilities: 
+	Business class prior probability: 0.2292134831460674
+	Entertainment class prior probability: 0.17348314606741572
+	Politics class prior probability: 0.18741573033707865
+	Sport class prior probability: 0.22966292134831462
+	Tech class prior probability: 0.1802247191011236
+
+(f)
+
+	Vocabulary Size: 
+	29421
+
+(g)
+
+	# Word Tokens in each class: 
+	Business: 133870.0
+	Entertainment: 98681.0
+	Politics: 148169.0
+	Sport: 130155.0
+	Tech: 159505.0
+
+(h)
+
+	# Word Tokens in the entire corpus: 
+	836357
+
+(i)
+
+	# and % of words with a frequency of zero in each class: 
+	Business: 18717, %: 63.61782400326298
+	Entertainment: 19134, %: 65.0351789538085
+	Politics: 19145, %: 65.07256721389484
+	Sport: 19787, %: 67.25468202984263
+	Tech: 18356, %: 62.39080928588423
+
+(j)
+
+	# and % of words with a frequency of one in the entire corpus: 
+	 Unique Word: 000
+	 Amount: 1 Frequency: %0.0033989327351211717
+
+(k)
+
+	our 2 favorite words (that are present in the vocabulary) and their log-prob: 
+	 Log-prob of goldeneye: -4.242067739432847
+	 Log-prob of nintendo: -3.8171397679637917
+
+
+(a) ***  MultinomialNB smoothing value of 0.9, try 4 ***
+
+(b)
+	Confusion matrix:
+[[94  0  1  0  4]
+ [ 0 77  0  0  0]
+ [ 2  1 87  0  1]
+ [ 0  0  0 97  0]
+ [ 0  0  1  0 80]]
+
+(c)
+
+	Precision, Recall, and F1-measure: 
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.96        99
+           1       0.99      1.00      0.99        77
+           2       0.98      0.96      0.97        91
+           3       1.00      1.00      1.00        97
+           4       0.94      0.99      0.96        81
+
+    accuracy                           0.98       445
+   macro avg       0.98      0.98      0.98       445
+weighted avg       0.98      0.98      0.98       445
+
+
+(d)
+
+	Accuracy: 
+	0.9775280898876404
+	Macro-average F1: 
+	0.9776346079105505
+	Weighted-average F1: 
+	0.9775018774739296
+
+(e)
+
+	Prior Probabilities: 
+	Business class prior probability: 0.2292134831460674
+	Entertainment class prior probability: 0.17348314606741572
+	Politics class prior probability: 0.18741573033707865
+	Sport class prior probability: 0.22966292134831462
+	Tech class prior probability: 0.1802247191011236
+
+(f)
+
+	Vocabulary Size: 
+	29421
+
+(g)
+
+	# Word Tokens in each class: 
+	Business: 133870.0
+	Entertainment: 98681.0
+	Politics: 148169.0
+	Sport: 130155.0
+	Tech: 159505.0
+
+(h)
+
+	# Word Tokens in the entire corpus: 
+	836357
+
+(i)
+
+	# and % of words with a frequency of zero in each class: 
+	Business: 18717, %: 63.61782400326298
+	Entertainment: 19134, %: 65.0351789538085
+	Politics: 19145, %: 65.07256721389484
+	Sport: 19787, %: 67.25468202984263
+	Tech: 18356, %: 62.39080928588423
 
 (j)
 
