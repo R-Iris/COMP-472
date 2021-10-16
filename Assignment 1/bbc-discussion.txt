@@ -1,5 +1,20 @@
 (a) what metric is best suited to this dataset/task and why (see step (2))
 
+Since there is a class imbalance (as we can see in BBC-distribution.pdf), using accuracy would not give us a good insight at the data is distributed.
+On the other hand, the recall metric might be a better fit if our goal was to capture as many positives as possible. However, since we are not in a
+medical context, getting as many positives (in this case, words that might be present in some classes even if we are not very sure) is not what we desire.
+For the reason mentioned above, a better metric would be precision. Since we want to be very sure of our prediction (what class can a word given to the model
+be part of) this would be a better metric.
+
+Knowing this, we want to maximize both the precision and recall measures, so using F1-Score would be the best metric for the overall model. The F1 score
+maintains a balance between the precision and recall of our classifier, which will give us the best model possible.
+
+
 
 (b) why the performance of steps (8-10) are the same or are different than those of step (7) above.
 
+Step 8 and 7 have the same performance as there are no chances in the Multinomial NB model. Additionally, Multinomial NB does not have any randomness to it.
+Step 9 and 7 have a different performance due to the difference in smoothing. By default, the Multinomial NB has a smoothing of 1.0, but step 9 requires a
+smoothing of 0.0001. This means that the metrics (accuracy, precision, recall and F1) will be slightly lower.
+Step 10 and 7 have a similar performance due to a very small difference in smoothing. In this case, the smoothing done at step 10 has a value of 0.9, which
+is extremely close to the default smoothing value of the Multinomial NB (1.0). This creates similar, but not perfectly equal, metrics.
