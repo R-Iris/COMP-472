@@ -163,5 +163,181 @@ print(f1(target_test, GSCV_MLP_predictions, average='macro'))
 print("\nWeighted-Average F1 Score:")
 print(f1(target_test, GSCV_MLP_predictions, average='weighted'))
 
+print("\n\n\n#############################################\n\n\n")
+
+print("Step 8: running each model 10 times\n\n")
+
+# 10 steps loop for each of the classifiers
+# for each model and append the average accuracy, average macro-average F1, average  weighted-average  F1
+# AND   standard  deviation  for  the  accuracy,  the  standard  deviation of  the  macro-average  F1,
+# and  the  standard  deviation  of  the  weighted-average  F1
+
+print("*** Gaussian NB ***")
+
+avgAccGNB = np.empty(10)
+avgMacroF1GNB = np.empty(10)
+avgWF1GNB = np.empty(10)
+
+for i in range(10):
+    GaussianNB.fit(doc_train, target_train)
+    gaussian_predictions = GaussianNB.predict(doc_test)
+    avgAccGNB[i] = acc_s(target_test, gaussian_predictions)
+    avgMacroF1GNB[i] = f1(target_test, gaussian_predictions, average='macro')
+    avgWF1GNB[i] = f1(target_test, gaussian_predictions, average='weighted')
+
+print("\nAverage Accuracy:")
+print(np.average(avgAccGNB))
+print("\nAverage Macro F1 Score:")
+print(np.average(avgMacroF1GNB))
+print("\nAverage Weighted-Average F1 Score:")
+print(np.average(avgWF1GNB))
+
+print("\nStandard Deviation Accuracy:")
+print(np.std(avgAccGNB))
+print("\nStandard Deviation Macro F1 Score:")
+print(np.std(avgMacroF1GNB))
+print("\nStandard Deviation Weighted-Average F1 Score:")
+print(np.std(avgWF1GNB))
+
+
+print("\n*** Base-DT ***")
+
+avgAccDT = np.empty(10)
+avgMacroF1DT = np.empty(10)
+avgWF1DT = np.empty(10)
+
+for i in range(10):
+    baseDT.fit(doc_train, target_train)
+    baseDT_predictions = baseDT.predict(doc_test)
+    avgAccDT[i] = acc_s(target_test, baseDT_predictions)
+    avgMacroF1DT[i] = f1(target_test, baseDT_predictions, average='macro')
+    avgWF1DT[i] = f1(target_test, baseDT_predictions, average='weighted')
+
+print("\nAverage Accuracy:")
+print(np.average(avgAccDT))
+print("\nAverage Macro F1 Score:")
+print(np.average(avgMacroF1DT))
+print("\nAverage Weighted-Average F1 Score:")
+print(np.average(avgWF1DT))
+
+print("\nStandard Deviation Accuracy:")
+print(np.std(avgAccDT))
+print("\nStandard Deviation Macro F1 Score:")
+print(np.std(avgMacroF1DT))
+print("\nStandard Deviation Weighted-Average F1 Score:")
+print(np.std(avgWF1DT))
+
+
+print("\n*** Top-DT ***")
+
+avgAccTop_DT = np.empty(10)
+avgMacroF1Top_DT = np.empty(10)
+avgWF1Top_DT = np.empty(10)
+
+for i in range(10):
+    GSCV.fit(doc_train, target_train)
+    topDT_predictions = GSCV.predict(doc_test)
+    avgAccTop_DT[i] = acc_s(target_test, topDT_predictions)
+    avgMacroF1Top_DT[i] = f1(target_test, topDT_predictions, average='macro')
+    avgWF1Top_DT[i] = f1(target_test, topDT_predictions, average='weighted')
+
+print("\nAverage Accuracy:")
+print(np.average(avgAccTop_DT))
+print("\nAverage Macro F1 Score:")
+print(np.average(avgMacroF1Top_DT))
+print("\nAverage Weighted-Average F1 Score:")
+print(np.average(avgWF1Top_DT))
+
+print("\nStandard Deviation Accuracy:")
+print(np.std(avgAccTop_DT))
+print("\nStandard Deviation Macro F1 Score:")
+print(np.std(avgMacroF1Top_DT))
+print("\nStandard Deviation Weighted-Average F1 Score:")
+print(np.std(avgWF1Top_DT))
+
+
+print("\n*** Perceptron ***")
+
+avgAccPer = np.empty(10)
+avgMacroF1Per = np.empty(10)
+avgWF1Per = np.empty(10)
+
+for i in range(10):
+    perceptron.fit(doc_train, target_train)
+    perceptron_predictions = perceptron.predict(doc_test)
+    avgAccPer[i] = acc_s(target_test, perceptron_predictions)
+    avgMacroF1Per[i] = f1(target_test, perceptron_predictions, average='macro')
+    avgWF1Per[i] = f1(target_test, perceptron_predictions, average='weighted')
+
+print("\nAverage Accuracy:")
+print(np.average(avgAccPer))
+print("\nAverage Macro F1 Score:")
+print(np.average(avgMacroF1Per))
+print("\nAverage Weighted-Average F1 Score:")
+print(np.average(avgWF1Per))
+
+print("\nStandard Deviation Accuracy:")
+print(np.std(avgAccPer))
+print("\nStandard Deviation Macro F1 Score:")
+print(np.std(avgMacroF1Per))
+print("\nStandard Deviation Weighted-Average F1 Score:")
+print(np.std(avgWF1Per))
+
+
+print("\n*** Base-MLP ***")
+
+avgAccMLP = np.empty(10)
+avgMacroF1MLP = np.empty(10)
+avgWF1MLP = np.empty(10)
+
+for i in range(10):
+    baseMLP.fit(doc_train, target_train)
+    baseMLP_predictions = baseMLP.predict(doc_test)
+    avgAccMLP[i] = acc_s(target_test, baseMLP_predictions)
+    avgMacroF1MLP[i] = f1(target_test, baseMLP_predictions, average='macro')
+    avgWF1MLP[i] = f1(target_test, baseMLP_predictions, average='weighted')
+
+print("\nAverage Accuracy:")
+print(np.average(avgAccMLP))
+print("\nAverage Macro F1 Score:")
+print(np.average(avgMacroF1MLP))
+print("\nAverage Weighted-Average F1 Score:")
+print(np.average(avgWF1MLP))
+
+print("\nStandard Deviation Accuracy:")
+print(np.std(avgAccMLP))
+print("\nStandard Deviation Macro F1 Score:")
+print(np.std(avgMacroF1MLP))
+print("\nStandard Deviation Weighted-Average F1 Score:")
+print(np.std(avgWF1MLP))
+
+
+print("\n*** Top-MLP ***")
+
+avgAccTop_MLP = np.empty(10)
+avgMacroF1Top_MLP = np.empty(10)
+avgWF1Top_MLP = np.empty(10)
+
+for i in range(10):
+    GSCV_MLP.fit(doc_train, target_train)
+    GSCV_MLP_predictions = GSCV_MLP.predict(doc_test)
+    avgAccTop_MLP[i] = acc_s(target_test, GSCV_MLP_predictions)
+    avgMacroF1Top_MLP[i] = f1(target_test, GSCV_MLP_predictions, average='macro')
+    avgWF1Top_MLP[i] = f1(target_test, GSCV_MLP_predictions, average='weighted')
+
+print("\nAverage Accuracy:")
+print(np.average(avgAccTop_MLP))
+print("\nAverage Macro F1 Score:")
+print(np.average(avgMacroF1Top_MLP))
+print("\nAverage Weighted-Average F1 Score:")
+print(np.average(avgWF1Top_MLP))
+
+print("\nStandard Deviation Accuracy:")
+print(np.std(avgAccTop_MLP))
+print("\nStandard Deviation Macro F1 Score:")
+print(np.std(avgMacroF1Top_MLP))
+print("\nStandard Deviation Weighted-Average F1 Score:")
+print(np.std(avgWF1Top_MLP))
+
 sys.stdout = temp  # Putting the system output back to normal
 
