@@ -1,6 +1,15 @@
 # based on code from https://stackabuse.com/minimax-and-alpha-beta-pruning-in-python
 
 import time
+import random
+
+#n: initgame, isend, minimax, alphabeta
+
+#blocs:
+#b: blocs are #'s, b number is used if bboard isnt defined; used in initgame, checkend(X)
+#bboard : randomized coordinates if not defined, based on b number; used in initgame, checkend(X)
+#bboard : if number of b and coordinates are specified in params, then ignore the number of b
+
 
 class Game:
     MINIMAX = 0
@@ -8,27 +17,46 @@ class Game:
     HUMAN = 2
     AI = 3
 
-    def __init__(self, recommend = True):
+    def __init__(self, recommend = True, n=3, b=0, bboard=[], s=3):
+        self.n = n
+        self.b = b
+        self.bboard = bboard
+        self.s = s
         self.initialize_game()
         self.recommend = recommend
 
     def initialize_game(self):
-        self.current_state = [['.','.','.'],
-                              ['.','.','.'],
-                              ['.','.','.']]
+        self.current_state = [['.' for x in range(self.n)] for y in range(self.n)]
+
+        if self.bboard == []:
+            for i in range (self.b):
+                X = random.randint(0,self.n-1)
+                Y = random.randint(0,self.n-1)
+                while self.current_state[X][Y] == '#':
+                    X = random.randint(0,self.n-1)
+                    Y = random.randint(0,self.n-1)
+                self.current_state[X][Y] = '#'
+        else:
+            for element in self.bboard:
+                self.current_state[element[0]][element[1]] = '#'
+
+        # self.current_state = [['.','.','.'],
+        #                       ['.','.','.'],
+        #                       ['.','.','.']]
+
         # Player X always plays first
         self.player_turn = 'X'
 
     def draw_board(self):
         print()
-        for y in range(0, 3):
-            for x in range(0, 3):
+        for y in range(0, self.n):
+            for x in range(0, self.n):
                 print(F'{self.current_state[x][y]}', end="")
             print()
         print()
 
     def is_valid(self, px, py):
-        if px < 0 or px > 2 or py < 0 or py > 2:
+        if px < 0 or px > self.n-1 or py < 0 or py > self.n-1:
             return False
         elif self.current_state[px][py] != '.':
             return False
@@ -37,30 +65,42 @@ class Game:
 
     def is_end(self):
         # Vertical win
-        for i in range(0, 3):
-            if (self.current_state[0][i] != '.' and
-                    self.current_state[0][i] == self.current_state[1][i] and
-                    self.current_state[1][i] == self.current_state[2][i]):
-                return self.current_state[0][i]
+        for y in range(0, self.n): # Once for each column
+            for x in range(0, self.n - self.s): # range is -s for efficiency reasons and out of bounds("beginning of the snake")
+                breakX = False
+                for s in range(0, self.s - 1): # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
+                    if self.current_state[s][y] != self.current_state[s+1][y]:
+                        breakX = True
+                        break # break the s loop
+                if breakX:
+                    break
+                return self.current_state[x][y] # win with (x, y)
+
         # Horizontal win
-        for i in range(0, 3):
-            if (self.current_state[i] == ['X', 'X', 'X']):
-                return 'X'
-            elif (self.current_state[i] == ['O', 'O', 'O']):
-                return 'O'
-        # Main diagonal win
+        for x in range(0, self.n): # Once for each row
+            for y in range(0, self.n - self.s): # range is -s for efficiency reasons and out of bounds("beginning of the snake")
+                breakY = False
+                for s in range(0, self.s - 1): # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
+                    if self.current_state[x][s] != self.current_state[x][s+1]:
+                        breakY = True
+                        break # break the s loop
+                if breakY:
+                    break
+                return self.current_state[x][y] # win with (x, y)
+
+        # Top left to bottom right diagonals
         if (self.current_state[0][0] != '.' and
                 self.current_state[0][0] == self.current_state[1][1] and
                 self.current_state[0][0] == self.current_state[2][2]):
             return self.current_state[0][0]
-        # Second diagonal win
+        # Top right to bottom left diagonals
         if (self.current_state[0][2] != '.' and
                 self.current_state[0][2] == self.current_state[1][1] and
                 self.current_state[0][2] == self.current_state[2][0]):
             return self.current_state[0][2]
         # Is whole board full?
-        for i in range(0, 3):
-            for j in range(0, 3):
+        for i in range(0, self.n):
+            for j in range(0, self.n):
                 # There's an empty field, we continue the game
                 if (self.current_state[i][j] == '.'):
                     return None
@@ -69,6 +109,8 @@ class Game:
 
     def check_end(self):
         self.result = self.is_end()
+        if self.result == '#': # tell Iris: # is bloc, if s blocs in a row are found, change it to none to not end the game
+            self.result = None
         # Printing the appropriate message if the game has ended
         if self.result != None:
             if self.result == 'X':
@@ -185,7 +227,7 @@ class Game:
                             beta = value
         return (value, x, y)
 
-    def play(self,algo=None,player_x=None,player_o=None):
+    def play(self, algo=None, player_x=None, player_o=None, d1=0, d2=0, t=0):
         if algo == None:
             algo = self.ALPHABETA
         if player_x == None:
@@ -220,7 +262,7 @@ class Game:
             self.switch_player()
 
 def main():
-    g = Game(recommend=True)
+    g = Game(recommend=True, n=4, b=3, bboard=[[0, 0], [1, 1], [2, 2], [3, 3]])
     g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
 
