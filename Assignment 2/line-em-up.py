@@ -10,18 +10,24 @@ import random
 #bboard : randomized coordinates if not defined, based on b number; used in initgame, checkend(X)
 #bboard : if number of b and coordinates are specified in params, then ignore the number of b
 
-
 class Game:
     MINIMAX = 0
     ALPHABETA = 1
     HUMAN = 2
     AI = 3
 
-    def __init__(self, recommend = True, n=3, b=0, bboard=[], s=3):
+    currentD1 = 0
+    currentD2 = 0
+    currentT = 0
+
+    def __init__(self, recommend = True, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0):
         self.n = n
         self.b = b
         self.bboard = bboard
         self.s = s
+        self.d1 = d1
+        self.d2 = d2
+        self.t = t
         self.initialize_game()
         self.recommend = recommend
 
@@ -171,11 +177,16 @@ class Game:
         # 0  - a tie
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
+
         value = 2
         if max:
             value = -2
         x = None
         y = None
+
+        if ((self.currentD1 >= self.d1 and self.d1 != 0) or (self.currentD2 >= self.d2 and self.d2 != 0) or (self.currentT >= self.t and self.t != 0) or self.is_end()):
+            return (value, x, y)
+
         result = self.is_end()
         if result == 'X':
             return (-1, x, y)
@@ -191,6 +202,7 @@ class Game:
                     if max:
                         self.current_state[i][j] = 'O'
                         (v, _, _) = self.minimax(max=False)
+                        self.currentD2 += 1
                         if v > value:
                             value = v
                             x = i
@@ -198,6 +210,7 @@ class Game:
                     else:
                         self.current_state[i][j] = 'X'
                         (v, _, _) = self.minimax(max=True)
+                        self.currentD1 += 1
                         if v < value:
                             value = v
                             x = i
@@ -256,13 +269,17 @@ class Game:
                             beta = value
         return (value, x, y)
 
-    def play(self, algo=None, player_x=None, player_o=None, d1=0, d2=0, t=0):
+    def play(self, algo=None, player_x=None, player_o=None):
         if algo == None:
             algo = self.ALPHABETA
         if player_x == None:
             player_x = self.HUMAN
         if player_o == None:
             player_o = self.HUMAN
+        # WHERE WE LEFT OFF, PROBABLY NEED TO CHANGE WHERE THEY GET RESET
+        self.currentD1 = 0
+        self.currentD2 = 0
+        self.currentT = 0
         while True:
             self.draw_board()
             if self.check_end():
@@ -292,7 +309,7 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(recommend=False, n=4, b=0, s=4)
+    g = Game(recommend=False, n=4, b=0, s=4, d1=0, d2=0, t=0)
     #g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     #g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     g.play(algo=Game.MINIMAX,player_x=Game.HUMAN,player_o=Game.HUMAN)
