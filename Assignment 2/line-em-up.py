@@ -20,9 +20,9 @@ class Game:
     currentD1 = 0
     currentD2 = 0
     currentT = 0.0
-    minimMaxStartT = 0.0
+    miniMaxStartT = 0.0
 
-    def __init__(self, recommend=True, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0.0):
+    def __init__(self, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0.0):
         self.n = n
         self.b = b
         self.bboard = bboard
@@ -34,7 +34,6 @@ class Game:
         self.t = t  # Max value of t
         # self.currentT = 0
         self.initialize_game()
-        self.recommend = recommend
 
     def initialize_game(self):
         self.current_state = [['.' for x in range(self.n)] for y in range(self.n)]
@@ -188,7 +187,9 @@ class Game:
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
 
-        minimMaxEndT = time.time()
+        # Updating the timer at intervals every time the minimax() method is called
+        miniMaxEndT = time.time()
+        self.currentT = round(miniMaxEndT - self.miniMaxStartT, 7)
 
         value = 2
         if max:
@@ -208,11 +209,14 @@ class Game:
         for i in range(0, self.n):  # change hardcoded 3 to self.n
             for j in range(0, self.n):  # change hardcoded 3 to self.n
 
-                self.currentT = round(self.minimMaxStartT - minimMaxEndT, 7)
-
-                if (self.currentD1 >= self.d1 != 0) or (self.currentD2 >= self.d2 != 0) or (self.currentT >= self.t != 0):
-                    #or self.is_end():
+                if (self.currentD1 >= self.d1 != 0) or (self.currentD2 >= self.d2 != 0):
+                    # or self.is_end():
                     return (value, x, y)
+
+                if self.currentT >= self.t != 0:
+                    print(F'\nPlayer {self.player_turn} under AI control has taken too long to decide.'
+                          F'\nPlayer {self.switch_player()} has won!')
+                    exit(0)
 
                 if self.current_state[i][j] == '.':
                     if max:
@@ -220,7 +224,7 @@ class Game:
                         # d2 is the 2nd player because O starts second
                         self.currentD2 += 1
 
-                        #print("D2 depth: " + str(self.currentD2))
+                        # print("D2 depth: " + str(self.currentD2))
                         (v, _, _) = self.minimax(max=False)
                         if v > value:
                             value = v
@@ -231,14 +235,13 @@ class Game:
                         # d1 is the 1st player because X starts first
                         self.currentD1 += 1
 
-                        #print("D1 depth: " + str(self.currentD1))
+                        # print("D1 depth: " + str(self.currentD1))
                         (v, _, _) = self.minimax(max=True)
                         if v < value:
                             value = v
                             x = i
                             y = j
                     self.current_state[i][j] = '.'
-
 
         # self.draw_board()
         return (value, x, y)
@@ -314,30 +317,28 @@ class Game:
             self.currentT = 0.0
             self.minimMaxStartT = 0.0
 
-            start = time.time()
-            if algo == self.MINIMAX:
-                minimMaxStartT = time.time()
-                if self.player_turn == 'X':
-                    #self.currentT = round(minimMaxstart - start, 7)
-                    (_, x, y) = self.minimax(max=False)
-                else:
-                    #self.currentT = round(minimMaxstart - start, 7)
-                    (_, x, y) = self.minimax(max=True)
-            else:  # algo == self.ALPHABETA
-                if self.player_turn == 'X':
-                    (m, x, y) = self.alphabeta(max=False)
-                else:
-                    (m, x, y) = self.alphabeta(max=True)
-            end = time.time()
-            #self.currentT = round(end - start, 7)
             if (self.player_turn == 'X' and player_x == self.HUMAN) or (
                     self.player_turn == 'O' and player_o == self.HUMAN):
-                if self.recommend:
-                    print("Maximum D1: " + str(self.currentD1) + " || Maximum D2: " + str(self.currentD2))
-                    print(F'Evaluation time: {round(end - start, 7)}s')
-                    print(F'Recommended move: x = {x}, y = {y}')
                 (x, y) = self.input_move()
             if (self.player_turn == 'X' and player_x == self.AI) or (self.player_turn == 'O' and player_o == self.AI):
+
+                start = time.time()
+                if algo == self.MINIMAX:
+                    self.miniMaxStartT = time.time()
+                    if self.player_turn == 'X':
+                        # self.currentT = round(minimMaxstart - start, 7)
+                        (_, x, y) = self.minimax(max=False)
+                    else:
+                        # self.currentT = round(minimMaxstart - start, 7)
+                        (_, x, y) = self.minimax(max=True)
+                else:  # algo == self.ALPHABETA
+                    if self.player_turn == 'X':
+                        (m, x, y) = self.alphabeta(max=False)
+                    else:
+                        (m, x, y) = self.alphabeta(max=True)
+                end = time.time()
+
+                print("Maximum D1: " + str(self.currentD1) + " || Maximum D2: " + str(self.currentD2))
                 print(F'Evaluation time: {round(end - start, 7)}s')
                 print(F'Player {self.player_turn} under AI control plays: x = {x}, y = {y}')
             self.current_state[x][y] = self.player_turn
@@ -346,7 +347,7 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(recommend=True, n=4, b=0, s=4, d1=100000, d2=100000, t=0.5)
+    g = Game(n=3, b=0, s=3, d1=300000, d2=300000, t=3)
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     g.play(algo=Game.MINIMAX, player_x=Game.HUMAN, player_o=Game.HUMAN)
@@ -356,10 +357,26 @@ if __name__ == "__main__":
     main()
 
 # Replicate this and work on it: The winner is X!
-# OX.
-# XO.
-# ..X
 
+# THIS IS BAD
+# O X .
+# X O .
+# . . X
+
+# THIS IS BAD
+#   X O .
+#   O X .
+#   . . O
+
+# THIS IS GOOD
+#   X . X
+#   O X .
+#   O
+
+# THIS IS GOOD ?
+#   X . X
+#   O X .
+#   O . O
 
 ### IMPORTANT NOTES ###
 # CHECK IF RECOMMENDED MOVES ARE CHANGING:
