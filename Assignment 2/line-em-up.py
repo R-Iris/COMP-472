@@ -19,9 +19,10 @@ class Game:
 
     currentD1 = 0
     currentD2 = 0
-    currentT = 0
+    currentT = 0.0
+    minimMaxStartT = 0.0
 
-    def __init__(self, recommend=True, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0):
+    def __init__(self, recommend=True, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0.0):
         self.n = n
         self.b = b
         self.bboard = bboard
@@ -187,18 +188,13 @@ class Game:
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
 
+        minimMaxEndT = time.time()
+
         value = 2
         if max:
             value = -2
         x = None
         y = None
-
-        #if (self.currentD1 > self.d1 != 0) or (self.currentD2 > self.d2 != 0) or (
-        #        self.currentT > self.t != 0) or self.is_end():
-        if (self.currentD1 > self.d1) or (self.currentD2 > self.d2):
-            print("Value of currentD1: " + str(self.currentD1))
-            print("Value of d1: " + str(self.d1))
-            return (value, x, y)
 
         result = self.is_end()
         if result == 'X':
@@ -211,12 +207,20 @@ class Game:
         # the rest is minimax choices between higher/lower values
         for i in range(0, self.n):  # change hardcoded 3 to self.n
             for j in range(0, self.n):  # change hardcoded 3 to self.n
+
+                self.currentT = round(self.minimMaxStartT - minimMaxEndT, 7)
+
+                if (self.currentD1 >= self.d1 != 0) or (self.currentD2 >= self.d2 != 0) or (self.currentT >= self.t != 0):
+                    #or self.is_end():
+                    return (value, x, y)
+
                 if self.current_state[i][j] == '.':
                     if max:
                         self.current_state[i][j] = 'O'
                         # d2 is the 2nd player because O starts second
                         self.currentD2 += 1
-                        print("D2 depth: " + str(self.currentD2))
+
+                        #print("D2 depth: " + str(self.currentD2))
                         (v, _, _) = self.minimax(max=False)
                         if v > value:
                             value = v
@@ -226,13 +230,17 @@ class Game:
                         self.current_state[i][j] = 'X'
                         # d1 is the 1st player because X starts first
                         self.currentD1 += 1
-                        print("D1 depth: " + str(self.currentD1))
+
+                        #print("D1 depth: " + str(self.currentD1))
                         (v, _, _) = self.minimax(max=True)
                         if v < value:
                             value = v
                             x = i
                             y = j
                     self.current_state[i][j] = '.'
+
+
+        # self.draw_board()
         return (value, x, y)
 
     def alphabeta(self, alpha=-2, beta=2, max=False):
@@ -303,13 +311,17 @@ class Game:
             # Resetting the d1, d2 and time
             self.currentD1 = 0
             self.currentD2 = 0
-            self.currentT = 0
+            self.currentT = 0.0
+            self.minimMaxStartT = 0.0
 
             start = time.time()
             if algo == self.MINIMAX:
+                minimMaxStartT = time.time()
                 if self.player_turn == 'X':
+                    #self.currentT = round(minimMaxstart - start, 7)
                     (_, x, y) = self.minimax(max=False)
                 else:
+                    #self.currentT = round(minimMaxstart - start, 7)
                     (_, x, y) = self.minimax(max=True)
             else:  # algo == self.ALPHABETA
                 if self.player_turn == 'X':
@@ -317,9 +329,11 @@ class Game:
                 else:
                     (m, x, y) = self.alphabeta(max=True)
             end = time.time()
+            #self.currentT = round(end - start, 7)
             if (self.player_turn == 'X' and player_x == self.HUMAN) or (
                     self.player_turn == 'O' and player_o == self.HUMAN):
                 if self.recommend:
+                    print("Maximum D1: " + str(self.currentD1) + " || Maximum D2: " + str(self.currentD2))
                     print(F'Evaluation time: {round(end - start, 7)}s')
                     print(F'Recommended move: x = {x}, y = {y}')
                 (x, y) = self.input_move()
@@ -332,7 +346,7 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(recommend=False, n=4, b=0, s=4, d1=10, d2=10, t=0)
+    g = Game(recommend=True, n=4, b=0, s=4, d1=100000, d2=100000, t=0.5)
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     g.play(algo=Game.MINIMAX, player_x=Game.HUMAN, player_o=Game.HUMAN)
@@ -345,3 +359,11 @@ if __name__ == "__main__":
 # OX.
 # XO.
 # ..X
+
+
+### IMPORTANT NOTES ###
+# CHECK IF RECOMMENDED MOVES ARE CHANGING:
+#   CURRENTLY:
+#           1st move for X: recommended x = 0 y = 0
+#           1st move for O: recommended x = 0 y = 1
+#           2nd move for X: recommended x = 0 y = 1 and so on
