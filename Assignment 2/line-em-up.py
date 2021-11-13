@@ -3,12 +3,13 @@
 import time
 import random
 
-#n: initgame, isend, minimax, alphabeta
 
-#blocs:
-#b: blocs are #'s, b number is used if bboard isnt defined; used in initgame, checkend(X)
-#bboard : randomized coordinates if not defined, based on b number; used in initgame, checkend(X)
-#bboard : if number of b and coordinates are specified in params, then ignore the number of b
+# n: initgame, isend, minimax, alphabeta
+
+# blocs:
+# b: blocs are #'s, b number is used if bboard isnt defined; used in initgame, checkend(X)
+# bboard : randomized coordinates if not defined, based on b number; used in initgame, checkend(X)
+# bboard : if number of b and coordinates are specified in params, then ignore the number of b
 
 class Game:
     MINIMAX = 0
@@ -20,14 +21,17 @@ class Game:
     currentD2 = 0
     currentT = 0
 
-    def __init__(self, recommend = True, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0):
+    def __init__(self, recommend=True, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0):
         self.n = n
         self.b = b
         self.bboard = bboard
         self.s = s
-        self.d1 = d1
-        self.d2 = d2
-        self.t = t
+        self.d1 = d1  # M ax value of d1
+        # self.currentD1 = 0
+        self.d2 = d2  # Max value of d2
+        # self.currentD2 = 0
+        self.t = t  # Max value of t
+        # self.currentT = 0
         self.initialize_game()
         self.recommend = recommend
 
@@ -35,12 +39,12 @@ class Game:
         self.current_state = [['.' for x in range(self.n)] for y in range(self.n)]
 
         if self.bboard == []:
-            for i in range (self.b):
-                X = random.randint(0,self.n-1)
-                Y = random.randint(0,self.n-1)
+            for i in range(self.b):
+                X = random.randint(0, self.n - 1)
+                Y = random.randint(0, self.n - 1)
                 while self.current_state[X][Y] == '#':
-                    X = random.randint(0,self.n-1)
-                    Y = random.randint(0,self.n-1)
+                    X = random.randint(0, self.n - 1)
+                    Y = random.randint(0, self.n - 1)
                 self.current_state[X][Y] = '#'
         else:
             for element in self.bboard:
@@ -62,7 +66,7 @@ class Game:
         print()
 
     def is_valid(self, px, py):
-        if px < 0 or px > self.n-1 or py < 0 or py > self.n-1:
+        if px < 0 or px > self.n - 1 or py < 0 or py > self.n - 1:
             return False
         elif self.current_state[px][py] != '.':
             return False
@@ -71,66 +75,71 @@ class Game:
 
     def is_end(self):
         # Vertical win
-        for y in range(0, self.n): # Once for each column
-            for x in range(0, self.n - self.s + 1): # range is -s for efficiency reasons and out of bounds("beginning of the snake")
+        for y in range(0, self.n):  # Once for each column
+            for x in range(0,
+                           self.n - self.s + 1):  # range is -s for efficiency reasons and out of bounds("beginning of the snake")
                 breakX = False
                 if self.current_state[x][y] == '#' or self.current_state[x][y] == '.':
                     continue
                 for s in range(0, self.s - 1):  # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
-                    if self.current_state[x+s][y] != self.current_state[x+s+1][y]:
+                    if self.current_state[x + s][y] != self.current_state[x + s + 1][y]:
                         breakX = True
                         break  # break the s loop
                 if breakX:
                     continue
-                return self.current_state[x][y] # win with (x, y)
+                return self.current_state[x][y]  # win with (x, y)
 
         # Horizontal win
-        for x in range(0, self.n): # Once for each row
-            for y in range(0, self.n - self.s + 1): # range is -s for efficiency reasons and out of bounds("beginning of the snake")
+        for x in range(0, self.n):  # Once for each row
+            for y in range(0,
+                           self.n - self.s + 1):  # range is -s for efficiency reasons and out of bounds("beginning of the snake")
                 breakY = False
                 if self.current_state[x][y] == '#' or self.current_state[x][y] == '.':
                     continue
-                for s in range(0, self.s - 1): # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
-                    if self.current_state[x][y+s] != self.current_state[x][y+s+1]:
+                for s in range(0, self.s - 1):  # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
+                    if self.current_state[x][y + s] != self.current_state[x][y + s + 1]:
                         breakY = True
-                        break # break the s loop
+                        break  # break the s loop
                 if breakY:
                     continue
-                return self.current_state[x][y] # win with (x, y)
+                return self.current_state[x][y]  # win with (x, y)
 
         # Top left to bottom right diagonals
-        for x in range(0, self.n - self.s + 1): # Once for each row
-            for y in range(0, self.n - self.s + 1): # range is -s for efficiency reasons and out of bounds("beginning of the snake")
+        for x in range(0, self.n - self.s + 1):  # Once for each row
+            for y in range(0,
+                           self.n - self.s + 1):  # range is -s for efficiency reasons and out of bounds("beginning of the snake")
                 break_LR_Diag = False
                 if self.current_state[x][y] == '#' or self.current_state[x][y] == '.':
                     continue
-                for s in range(0, self.s - 1): # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
-                    if self.current_state[x+s][y+s] != self.current_state[x+s+1][y+s+1]: # to find the next element we add (1,1) to our current
+                for s in range(0, self.s - 1):  # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
+                    if self.current_state[x + s][y + s] != self.current_state[x + s + 1][
+                        y + s + 1]:  # to find the next element we add (1,1) to our current
                         break_LR_Diag = True
-                        break # break from s loop
+                        break  # break from s loop
                 if break_LR_Diag:
                     continue
-                return self.current_state[x][y] # win with (x, y)
+                return self.current_state[x][y]  # win with (x, y)
 
-        for x in range(0, self.n - self.s + 1): # Once for each row
-            for y in range(self.n-self.s-1, self.n): # range is - s for efficiency reasons and out of bounds ("beginning of the snake" )
+        for x in range(0, self.n - self.s + 1):  # Once for each row
+            for y in range(self.n - self.s - 1,
+                           self.n):  # range is - s for efficiency reasons and out of bounds ("beginning of the snake" )
                 break_RL_Diag = False
                 if self.current_state[x][y] == '#' or self.current_state[x][y] == '.':
                     continue
-                for s in range(0, self.s - 1): # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, and 2 = 3
-                    if self.current_state[x+s][y-s] != self.current_state[x+s+1][y-s-1]: # x decrements but y still increments
+                for s in range(0, self.s - 1):  # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, and 2 = 3
+                    if self.current_state[x + s][y - s] != self.current_state[x + s + 1][
+                        y - s - 1]:  # x decrements but y still increments
                         break_RL_Diag = True
-                        break # break from s loop
+                        break  # break from s loop
                 if break_RL_Diag:
                     continue
-                return self.current_state[x][y] # win with (x, y)
+                return self.current_state[x][y]  # win with (x, y)
 
         # Is whole board full?
         for i in range(0, self.n):
             for j in range(0, self.n):
                 # There's an empty field, we continue the game
                 if self.current_state[i][j] == '.':
-
                     return None
         # It's a tie!
 
@@ -157,7 +166,7 @@ class Game:
             px = int(input('enter the x coordinate: '))
             py = int(input('enter the y coordinate: '))
             if self.is_valid(px, py):
-                return (px,py)
+                return (px, py)
             else:
                 print('The move is not valid! Try again.')
 
@@ -184,7 +193,11 @@ class Game:
         x = None
         y = None
 
-        if ((self.currentD1 >= self.d1 and self.d1 != 0) or (self.currentD2 >= self.d2 and self.d2 != 0) or (self.currentT >= self.t and self.t != 0) or self.is_end()):
+        #if (self.currentD1 > self.d1 != 0) or (self.currentD2 > self.d2 != 0) or (
+        #        self.currentT > self.t != 0) or self.is_end():
+        if (self.currentD1 > self.d1) or (self.currentD2 > self.d2):
+            print("Value of currentD1: " + str(self.currentD1))
+            print("Value of d1: " + str(self.d1))
             return (value, x, y)
 
         result = self.is_end()
@@ -196,21 +209,25 @@ class Game:
             return (0, x, y)
         # only changes involve the limits of the range of i and j,
         # the rest is minimax choices between higher/lower values
-        for i in range(0, self.n): # change hardcoded 3 to self.n
-            for j in range(0, self.n): # change hardcoded 3 to self.n
+        for i in range(0, self.n):  # change hardcoded 3 to self.n
+            for j in range(0, self.n):  # change hardcoded 3 to self.n
                 if self.current_state[i][j] == '.':
                     if max:
                         self.current_state[i][j] = 'O'
-                        (v, _, _) = self.minimax(max=False)
+                        # d2 is the 2nd player because O starts second
                         self.currentD2 += 1
+                        print("D2 depth: " + str(self.currentD2))
+                        (v, _, _) = self.minimax(max=False)
                         if v > value:
                             value = v
                             x = i
                             y = j
                     else:
                         self.current_state[i][j] = 'X'
-                        (v, _, _) = self.minimax(max=True)
+                        # d1 is the 1st player because X starts first
                         self.currentD1 += 1
+                        print("D1 depth: " + str(self.currentD1))
+                        (v, _, _) = self.minimax(max=True)
                         if v < value:
                             value = v
                             x = i
@@ -276,43 +293,55 @@ class Game:
             player_x = self.HUMAN
         if player_o == None:
             player_o = self.HUMAN
-        # WHERE WE LEFT OFF, PROBABLY NEED TO CHANGE WHERE THEY GET RESET
-        self.currentD1 = 0
-        self.currentD2 = 0
-        self.currentT = 0
+
+        # A while loop is a move
         while True:
             self.draw_board()
             if self.check_end():
                 return
+
+            # Resetting the d1, d2 and time
+            self.currentD1 = 0
+            self.currentD2 = 0
+            self.currentT = 0
+
             start = time.time()
             if algo == self.MINIMAX:
                 if self.player_turn == 'X':
                     (_, x, y) = self.minimax(max=False)
                 else:
                     (_, x, y) = self.minimax(max=True)
-            else: # algo == self.ALPHABETA
+            else:  # algo == self.ALPHABETA
                 if self.player_turn == 'X':
                     (m, x, y) = self.alphabeta(max=False)
                 else:
                     (m, x, y) = self.alphabeta(max=True)
             end = time.time()
-            if (self.player_turn == 'X' and player_x == self.HUMAN) or (self.player_turn == 'O' and player_o == self.HUMAN):
+            if (self.player_turn == 'X' and player_x == self.HUMAN) or (
+                    self.player_turn == 'O' and player_o == self.HUMAN):
                 if self.recommend:
                     print(F'Evaluation time: {round(end - start, 7)}s')
                     print(F'Recommended move: x = {x}, y = {y}')
-                (x,y) = self.input_move()
+                (x, y) = self.input_move()
             if (self.player_turn == 'X' and player_x == self.AI) or (self.player_turn == 'O' and player_o == self.AI):
                 print(F'Evaluation time: {round(end - start, 7)}s')
                 print(F'Player {self.player_turn} under AI control plays: x = {x}, y = {y}')
             self.current_state[x][y] = self.player_turn
             self.switch_player()
 
+
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(recommend=False, n=4, b=0, s=4, d1=0, d2=0, t=0)
-    #g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
-    #g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
-    g.play(algo=Game.MINIMAX,player_x=Game.HUMAN,player_o=Game.HUMAN)
+    g = Game(recommend=False, n=4, b=0, s=4, d1=10, d2=10, t=0)
+    # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
+    # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
+    g.play(algo=Game.MINIMAX, player_x=Game.HUMAN, player_o=Game.HUMAN)
+
 
 if __name__ == "__main__":
     main()
+
+# Replicate this and work on it: The winner is X!
+# OX.
+# XO.
+# ..X
