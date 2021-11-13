@@ -66,51 +66,73 @@ class Game:
     def is_end(self):
         # Vertical win
         for y in range(0, self.n): # Once for each column
-            for x in range(0, self.n - self.s): # range is -s for efficiency reasons and out of bounds("beginning of the snake")
+            for x in range(0, self.n - self.s + 1): # range is -s for efficiency reasons and out of bounds("beginning of the snake")
                 breakX = False
-                for s in range(0, self.s - 1): # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
-                    if self.current_state[s][y] != self.current_state[s+1][y]:
+                if self.current_state[x][y] == '#' or self.current_state[x][y] == '.':
+                    continue
+                for s in range(0, self.s - 1):  # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
+                    if self.current_state[x+s][y] != self.current_state[x+s+1][y]:
                         breakX = True
-                        break # break the s loop
+                        break  # break the s loop
                 if breakX:
-                    break
+                    continue
                 return self.current_state[x][y] # win with (x, y)
 
         # Horizontal win
         for x in range(0, self.n): # Once for each row
-            for y in range(0, self.n - self.s): # range is -s for efficiency reasons and out of bounds("beginning of the snake")
+            for y in range(0, self.n - self.s + 1): # range is -s for efficiency reasons and out of bounds("beginning of the snake")
                 breakY = False
+                if self.current_state[x][y] == '#' or self.current_state[x][y] == '.':
+                    continue
                 for s in range(0, self.s - 1): # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
-                    if self.current_state[x][s] != self.current_state[x][s+1]:
+                    if self.current_state[x][y+s] != self.current_state[x][y+s+1]:
                         breakY = True
                         break # break the s loop
                 if breakY:
-                    break
+                    continue
                 return self.current_state[x][y] # win with (x, y)
 
         # Top left to bottom right diagonals
-        if (self.current_state[0][0] != '.' and
-                self.current_state[0][0] == self.current_state[1][1] and
-                self.current_state[0][0] == self.current_state[2][2]):
-            return self.current_state[0][0]
-        # Top right to bottom left diagonals
-        if (self.current_state[0][2] != '.' and
-                self.current_state[0][2] == self.current_state[1][1] and
-                self.current_state[0][2] == self.current_state[2][0]):
-            return self.current_state[0][2]
+        for x in range(0, self.n - self.s + 1): # Once for each row
+            for y in range(0, self.n - self.s + 1): # range is -s for efficiency reasons and out of bounds("beginning of the snake")
+                break_LR_Diag = False
+                if self.current_state[x][y] == '#' or self.current_state[x][y] == '.':
+                    continue
+                for s in range(0, self.s - 1): # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
+                    if self.current_state[x+s][y+s] != self.current_state[x+s+1][y+s+1]: # to find the next element we add (1,1) to our current
+                        break_LR_Diag = True
+                        break # break from s loop
+                if break_LR_Diag:
+                    continue
+                return self.current_state[x][y] # win with (x, y)
+
+        for x in range(0, self.n - self.s + 1): # Once for each row
+            for y in range(self.n-self.s-1, self.n): # range is - s for efficiency reasons and out of bounds ("beginning of the snake" )
+                break_RL_Diag = False
+                if self.current_state[x][y] == '#' or self.current_state[x][y] == '.':
+                    continue
+                for s in range(0, self.s - 1): # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, and 2 = 3
+                    if self.current_state[x+s][y-s] != self.current_state[x+s+1][y-s-1]: # x decrements but y still increments
+                        break_RL_Diag = True
+                        break # break from s loop
+                if break_RL_Diag:
+                    continue
+                return self.current_state[x][y] # win with (x, y)
+
         # Is whole board full?
         for i in range(0, self.n):
             for j in range(0, self.n):
                 # There's an empty field, we continue the game
-                if (self.current_state[i][j] == '.'):
+                if self.current_state[i][j] == '.':
+
                     return None
         # It's a tie!
+
         return '.'
 
+    # adapted for new ruleset
     def check_end(self):
         self.result = self.is_end()
-        if self.result == '#': # tell Iris: # is bloc, if s blocs in a row are found, change it to none to not end the game
-            self.result = None
         # Printing the appropriate message if the game has ended
         if self.result != None:
             if self.result == 'X':
@@ -122,6 +144,7 @@ class Game:
             self.initialize_game()
         return self.result
 
+    # looks fine
     def input_move(self):
         while True:
             print(F'Player {self.player_turn}, enter your move:')
@@ -132,6 +155,7 @@ class Game:
             else:
                 print('The move is not valid! Try again.')
 
+    # looks fine
     def switch_player(self):
         if self.player_turn == 'X':
             self.player_turn = 'O'
@@ -139,6 +163,7 @@ class Game:
             self.player_turn = 'X'
         return self.player_turn
 
+    # need to adapt to new ruleset
     def minimax(self, max=False):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
@@ -158,8 +183,10 @@ class Game:
             return (1, x, y)
         elif result == '.':
             return (0, x, y)
-        for i in range(0, 3):
-            for j in range(0, 3):
+        # only changes involve the limits of the range of i and j,
+        # the rest is minimax choices between higher/lower values
+        for i in range(0, self.n): # change hardcoded 3 to self.n
+            for j in range(0, self.n): # change hardcoded 3 to self.n
                 if self.current_state[i][j] == '.':
                     if max:
                         self.current_state[i][j] = 'O'
@@ -197,8 +224,10 @@ class Game:
             return (1, x, y)
         elif result == '.':
             return (0, x, y)
-        for i in range(0, 3):
-            for j in range(0, 3):
+        for i in range(0, self.n):
+            # only change to these for loops is the limits of each range for i and j
+            # functionality for alpha-beta remains the same
+            for j in range(0, self.n):
                 if self.current_state[i][j] == '.':
                     if max:
                         self.current_state[i][j] = 'O'
@@ -262,9 +291,11 @@ class Game:
             self.switch_player()
 
 def main():
-    g = Game(recommend=True, n=4, b=3, bboard=[[0, 0], [1, 1], [2, 2], [3, 3]])
-    g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
-    g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
+    # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
+    g = Game(recommend=False, n=4, b=0, s=4)
+    #g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
+    #g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
+    g.play(algo=Game.MINIMAX,player_x=Game.HUMAN,player_o=Game.HUMAN)
 
 if __name__ == "__main__":
     main()
