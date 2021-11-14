@@ -308,10 +308,10 @@ class Game:
                     if max:
                         self.current_state[i][j] = 'O'
                         self.currentD2 += 1
-                        (v, k, l) = self.alphabeta(alpha, beta, max=False)
+                        (v, k, l) = self.alphabeta(alpha, beta, max=False, heur=heur)
                         if v > value:
                             if heur == self.E1:
-                                if self.e1(i, j) > self.e1(k, l):
+                                if self.e1(x=i, y=j) > self.e1(x=k, y=l):
                                     value = v
                                     x = i
                                     y = j
@@ -329,10 +329,10 @@ class Game:
                     else:
                         self.current_state[i][j] = 'X'
                         self.currentD1 += 1
-                        (v, k, l) = self.alphabeta(alpha, beta, max=True)
+                        (v, k, l) = self.alphabeta(alpha, beta, max=True, heur=heur)
                         if v < value:
                             if heur == self.E1:
-                                if self.e1(i, j) < self.e1(k, l):
+                                if self.e1(x=i, y=j) < self.e1(x=k, y=l):
                                     value = v
                                     x = i
                                     y = j
