@@ -16,6 +16,8 @@ class Game:
     ALPHABETA = 1
     HUMAN = 2
     AI = 3
+    E1 = 4
+    E2 = 5
 
     currentD1 = 0
     currentD2 = 0
@@ -245,7 +247,7 @@ class Game:
 
         return (value, x, y)
 
-    def alphabeta(self, alpha=-2, beta=2, max=False):
+    def alphabeta(self, alpha=-2, beta=2, max=False, heur=None):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
@@ -290,19 +292,44 @@ class Game:
                     if max:
                         self.current_state[i][j] = 'O'
                         self.currentD2 += 1
-                        (v, _, _) = self.alphabeta(alpha, beta, max=False)
+                        (v, k, l) = self.alphabeta(alpha, beta, max=False)
                         if v > value:
-                            value = v
-                            x = i
-                            y = j
+                            if heur == self.E1:
+                                if self.e1(i, j) > self.e1(k, l):
+                                    value = v
+                                    x = i
+                                    y = j
+                                else:
+                                    x = k
+                                    y = l
+                            elif heur == self.E2:
+                                print("hello :)")
+                                #e2(x,y)
+                            else:
+                                value = v
+                                x = i
+                                y = j
+
                     else:
                         self.current_state[i][j] = 'X'
                         self.currentD1 += 1
-                        (v, _, _) = self.alphabeta(alpha, beta, max=True)
+                        (v, k, l) = self.alphabeta(alpha, beta, max=True)
                         if v < value:
-                            value = v
-                            x = i
-                            y = j
+                            if heur == self.E1:
+                                if self.e1(i, j) < self.e1(k, l):
+                                    value = v
+                                    x = i
+                                    y = j
+                                else:
+                                    x = k
+                                    y = l
+                            elif heur == self.E2:
+                                print("hello :)")
+                                #e2(x,y)
+                            else:
+                                value = v
+                                x = i
+                                y = j
                     self.current_state[i][j] = '.'
                     if max:
                         if value >= beta:
@@ -316,9 +343,36 @@ class Game:
                             beta = value
         return (value, x, y)
 
-    def play(self, algo=None, player_x=None, player_o=None):
+# WHERE WE LEFT OFF, FOR SOME REASON IT READS X/Y AS NONE
+    def e1(self, x, y):
+        score = 0
+        val = self.current_state[x][y]
+        if x+1 < self.n and self.current_state[x+1][y] == val:
+            score += 1
+        if x-1 > 0 and self.current_state[x-1][y] == val:
+            score += 1
+        if y+1 < self.n and self.current_state[x][y+1] == val:
+            score += 1
+        if y-1 > 0 and self.current_state[x][y-1] == val:
+            score += 1
+        if y+1 < self.n and x+1 < self.n and self.current_state[x+1][y+1] == val:
+            score += 2
+        if y-1 > 0 and x-1 > 0 and self.current_state[x-1][y-1] == val:
+            score += 2
+        if x-1 > 0 and y+1 < self.n and self.current_state[x-1][y+1] == val:
+            score += 2
+        if x+1 < self.n and y-1 > 0 and self.current_state[x+1][y-1] == val:
+            score += 2
+        return score
+
+    #def e2(self, x, y):
+
+
+    def play(self, algo=None, player_x=None, player_o=None, heur=None):
         if algo == None:
             algo = self.ALPHABETA
+        if heur == None:
+            heur = self.E1
         if player_x == None:
             player_x = self.HUMAN
         if player_o == None:
@@ -352,9 +406,9 @@ class Game:
                 else: # algo == self.ALPHABETA:
                     self.alphaBetaStartT = time.time()
                     if self.player_turn == 'X':
-                        (m, x, y) = self.alphabeta(max=False)
+                        (m, x, y) = self.alphabeta(max=False, heur=heur)
                     else:
-                        (m, x, y) = self.alphabeta(max=True)
+                        (m, x, y) = self.alphabeta(max=True, heur=heur)
                 end = time.time()
 
                 print("Maximum D1: " + str(self.currentD1) + " || Maximum D2: " + str(self.currentD2))
@@ -363,6 +417,7 @@ class Game:
             self.current_state[x][y] = self.player_turn
             self.switch_player()
 
+
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
     g = Game(n=3, b=0, s=3, d1=300000, d2=300000, t=20)
@@ -370,7 +425,8 @@ def main():
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
 
-    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI)
+    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur=Game.E1)
+
 
 if __name__ == "__main__":
     main()
