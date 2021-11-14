@@ -83,7 +83,6 @@ class Game:
                         break  # break the s loop
                 if breakX:
                     continue
-                print("Vertical win")
                 return self.current_state[x][y]  # win with (x, y)
 
         # Horizontal win
@@ -99,7 +98,6 @@ class Game:
                         break  # break the s loop
                 if breakY:
                     continue
-                print("Horizontal win")
                 return self.current_state[x][y]  # win with (x, y)
 
         # Top left to bottom right diagonals
@@ -116,7 +114,6 @@ class Game:
                         break  # break from s loop
                 if break_LR_Diag:
                     continue
-                print("TL to BR win")
                 return self.current_state[x][y]  # win with (x, y)
 
         # Top right to bottom left diagonals
@@ -133,7 +130,6 @@ class Game:
                         break  # break from s loop
                 if break_RL_Diag:
                     continue
-                print("TR to BL win")
                 return self.current_state[x][y]  # win with (x, y)
 
         # Is whole board full?
@@ -198,6 +194,7 @@ class Game:
         x = None
         y = None
 
+        # Evaluation Function
         result = self.is_end()
         if result == 'X':
             return (-1, x, y)
@@ -205,6 +202,7 @@ class Game:
             return (1, x, y)
         elif result == '.':
             return (0, x, y)
+
         # only changes involve the limits of the range of i and j,
         # the rest is minimax choices between higher/lower values
         for i in range(0, self.n):  # change hardcoded 3 to self.n
@@ -244,7 +242,6 @@ class Game:
                             y = j
                     self.current_state[i][j] = '.'
 
-        # self.draw_board()
         return (value, x, y)
 
     def alphabeta(self, alpha=-2, beta=2, max=False):
@@ -347,10 +344,10 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(n=3, b=0, s=3, d1=300000, d2=300000, t=3)
+    g = Game(n=4, b=5, s=3, d1=300000, d2=300000, t=5)
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
-    g.play(algo=Game.MINIMAX, player_x=Game.HUMAN, player_o=Game.HUMAN)
+    g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
 
 if __name__ == "__main__":
     main()
