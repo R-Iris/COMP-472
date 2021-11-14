@@ -36,33 +36,7 @@ class Game:
         self.initialize_game()
 
     def initialize_game(self):
-        #self.current_state = [['.' for x in range(self.n)] for y in range(self.n)]
-
-        # THIS IS BAD
-        # O X .
-        # X O .
-        # . . X
-
-        # THIS IS BAD
-        #   X O .
-        #   O X .
-        #   . . O
-
-        # THIS IS GOOD
-        #   X . X
-        #   O X .
-        #   O
-
-        # THIS IS GOOD ?
-        #   X . X
-        #   O X .
-        #   O . O
-
-        self.current_state = [['O','X','.'],
-                              ['X','O','.'],
-                              ['.','.','.']]
-
-        self.current_state[-1][2] = 'X'
+        self.current_state = [['.' for x in range(self.n)] for y in range(self.n)]
 
         if self.bboard == []:
             for i in range(self.b):
@@ -75,10 +49,6 @@ class Game:
         else:
             for element in self.bboard:
                 self.current_state[element[0]][element[1]] = '#'
-
-        # self.current_state = [['.','.','.'],
-        #                       ['.','.','.'],
-        #                       ['.','.','.']]
 
         # Player X always plays first
         self.player_turn = 'X'
@@ -375,7 +345,6 @@ class Game:
             self.current_state[x][y] = self.player_turn
             self.switch_player()
 
-
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
     g = Game(n=3, b=0, s=3, d1=300000, d2=300000, t=3)
@@ -383,35 +352,5 @@ def main():
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     g.play(algo=Game.MINIMAX, player_x=Game.HUMAN, player_o=Game.HUMAN)
 
-
 if __name__ == "__main__":
     main()
-
-# Replicate this and work on it: The winner is X!
-
-# THIS IS BAD
-# O X .
-# X O .
-# . . X
-
-# THIS IS BAD
-#   X O .
-#   O X .
-#   . . O
-
-# THIS IS GOOD
-#   X . X
-#   O X .
-#   O
-
-# THIS IS GOOD ?
-#   X . X
-#   O X .
-#   O . O
-
-### IMPORTANT NOTES ###
-# CHECK IF RECOMMENDED MOVES ARE CHANGING:
-#   CURRENTLY:
-#           1st move for X: recommended x = 0 y = 0
-#           1st move for O: recommended x = 0 y = 1
-#           2nd move for X: recommended x = 0 y = 1 and so on
