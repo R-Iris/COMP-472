@@ -36,7 +36,33 @@ class Game:
         self.initialize_game()
 
     def initialize_game(self):
-        self.current_state = [['.' for x in range(self.n)] for y in range(self.n)]
+        #self.current_state = [['.' for x in range(self.n)] for y in range(self.n)]
+
+        # THIS IS BAD
+        # O X .
+        # X O .
+        # . . X
+
+        # THIS IS BAD
+        #   X O .
+        #   O X .
+        #   . . O
+
+        # THIS IS GOOD
+        #   X . X
+        #   O X .
+        #   O
+
+        # THIS IS GOOD ?
+        #   X . X
+        #   O X .
+        #   O . O
+
+        self.current_state = [['O','X','.'],
+                              ['X','O','.'],
+                              ['.','.','.']]
+
+        self.current_state[-1][2] = 'X'
 
         if self.bboard == []:
             for i in range(self.b):
@@ -75,37 +101,39 @@ class Game:
 
     def is_end(self):
         # Vertical win
-        for y in range(0, self.n):  # Once for each column
-            for x in range(0,
+        for x in range(0, self.n):  # Once for each column
+            for y in range(0,
                            self.n - self.s + 1):  # range is -s for efficiency reasons and out of bounds("beginning of the snake")
                 breakX = False
                 if self.current_state[x][y] == '#' or self.current_state[x][y] == '.':
                     continue
                 for s in range(0, self.s - 1):  # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
-                    if self.current_state[x + s][y] != self.current_state[x + s + 1][y]:
+                    if self.current_state[x][y + s] != self.current_state[x][y + s + 1]:
                         breakX = True
                         break  # break the s loop
                 if breakX:
                     continue
+                print("Vertical win")
                 return self.current_state[x][y]  # win with (x, y)
 
         # Horizontal win
-        for x in range(0, self.n):  # Once for each row
-            for y in range(0,
+        for y in range(0, self.n):  # Once for each row
+            for x in range(0,
                            self.n - self.s + 1):  # range is -s for efficiency reasons and out of bounds("beginning of the snake")
                 breakY = False
                 if self.current_state[x][y] == '#' or self.current_state[x][y] == '.':
                     continue
                 for s in range(0, self.s - 1):  # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, 2 = 3
-                    if self.current_state[x][y + s] != self.current_state[x][y + s + 1]:
+                    if self.current_state[x + s][y] != self.current_state[x + s + 1][y]:
                         breakY = True
                         break  # break the s loop
                 if breakY:
                     continue
+                print("Horizontal win")
                 return self.current_state[x][y]  # win with (x, y)
 
         # Top left to bottom right diagonals
-        for x in range(0, self.n - self.s + 1):  # Once for each row
+        for x in range(0, self.n - self.s + 1):  # Till n-s+1 columns (exclusive)
             for y in range(0,
                            self.n - self.s + 1):  # range is -s for efficiency reasons and out of bounds("beginning of the snake")
                 break_LR_Diag = False
@@ -118,21 +146,24 @@ class Game:
                         break  # break from s loop
                 if break_LR_Diag:
                     continue
+                print("TL to BR win")
                 return self.current_state[x][y]  # win with (x, y)
 
-        for x in range(0, self.n - self.s + 1):  # Once for each row
-            for y in range(self.n - self.s - 1,
-                           self.n):  # range is - s for efficiency reasons and out of bounds ("beginning of the snake" )
+        # Top right to bottom left diagonals
+        for x in range(self.s - 1, self.n):  # Start at n-s'th column till n (Excluded)
+            for y in range(0,
+                           self.n - self.s + 1):  # range is - s for efficiency reasons and out of bounds ("beginning of the snake" )
                 break_RL_Diag = False
                 if self.current_state[x][y] == '#' or self.current_state[x][y] == '.':
                     continue
                 for s in range(0, self.s - 1):  # -1 to the range, for s = 3, there are 2 checks -> 1 = 2, and 2 = 3
-                    if self.current_state[x + s][y - s] != self.current_state[x + s + 1][
-                        y - s - 1]:  # x decrements but y still increments
+                    if self.current_state[x - s][y + s] != self.current_state[x - s - 1][
+                        y + s + 1]:  # x decrements but y still increments
                         break_RL_Diag = True
                         break  # break from s loop
                 if break_RL_Diag:
                     continue
+                print("TR to BL win")
                 return self.current_state[x][y]  # win with (x, y)
 
         # Is whole board full?
