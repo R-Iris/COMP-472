@@ -275,9 +275,9 @@ class Game:
         alphaBetaEndT = time.time()
         self.currentT = round(alphaBetaEndT - self.alphaBetaStartT, 7)
 
-        value = 2
+        value = 100
         if max:
-            value = -2
+            value = -100
         x = None
         y = None
 
@@ -304,48 +304,34 @@ class Game:
                           F'\nPlayer {self.switch_player()} has won!')
                     exit(0)
 
+                if heur == self.E1:
+                    value = self.e1(x=i, y=j)
+                #elif heur == self.E2:
+                    # e2
+
                 if self.current_state[i][j] == '.':
                     if max:
                         self.current_state[i][j] = 'O'
                         self.currentD2 += 1
                         (v, k, l) = self.alphabeta(alpha, beta, max=False, heur=heur)
                         if v > value:
-                            if heur == self.E1:
-                                if self.e1(x=i, y=j) > self.e1(x=k, y=l):
-                                    value = v
-                                    x = i
-                                    y = j
-                                else:
-                                    x = k
-                                    y = l
-                            elif heur == self.E2:
-                                print("hello :)")
-                                # e2(x,y)
-                            else:
-                                value = v
-                                x = i
-                                y = j
-
+                            value = v
+                            x = k
+                            y = l
+                        else:
+                            x = i
+                            y = j
                     else:
                         self.current_state[i][j] = 'X'
                         self.currentD1 += 1
                         (v, k, l) = self.alphabeta(alpha, beta, max=True, heur=heur)
                         if v < value:
-                            if heur == self.E1:
-                                if self.e1(x=i, y=j) < self.e1(x=k, y=l):
-                                    value = v
-                                    x = i
-                                    y = j
-                                else:
-                                    x = k
-                                    y = l
-                            elif heur == self.E2:
-                                print("hello :)")
-                                # e2(x,y)
-                            else:
-                                value = v
-                                x = i
-                                y = j
+                            value = v
+                            x = k
+                            y = l
+                        else:
+                            x = i
+                            y = j
                     self.current_state[i][j] = '.'
                     if max:
                         if value >= beta:
@@ -362,23 +348,63 @@ class Game:
     # WHERE WE LEFT OFF, FOR SOME REASON IT READS X/Y AS NONE
     def e1(self, x, y):
         score = 0
-        val = self.current_state[x][y]
-        if x + 1 < self.n and self.current_state[x + 1][y] == val:
-            score += 1
-        if x - 1 > 0 and self.current_state[x - 1][y] == val:
-            score += 1
-        if y + 1 < self.n and self.current_state[x][y + 1] == val:
-            score += 1
-        if y - 1 > 0 and self.current_state[x][y - 1] == val:
-            score += 1
-        if y + 1 < self.n and x + 1 < self.n and self.current_state[x + 1][y + 1] == val:
-            score += 2
-        if y - 1 > 0 and x - 1 > 0 and self.current_state[x - 1][y - 1] == val:
-            score += 2
-        if x - 1 > 0 and y + 1 < self.n and self.current_state[x - 1][y + 1] == val:
-            score += 2
-        if x + 1 < self.n and y - 1 > 0 and self.current_state[x + 1][y - 1] == val:
-            score += 2
+        symbol = self.current_state[x][y]
+        if x + 1 < self.n:
+            if self.current_state[x + 1][y] == symbol:
+                score += 1
+            elif self.current_state[x + 1][y] == '.' or self.current_state[x + 1][y] == '#':
+                score += 0
+            else:
+                score -= 1
+        if x - 1 > 0:
+            if self.current_state[x - 1][y] == symbol:
+                score += 1
+            elif self.current_state[x - 1][y] == '.' or self.current_state[x - 1][y] == '#':
+                score += 0
+            else:
+                score -= 1
+        if y + 1 < self.n:
+            if self.current_state[x][y + 1] == symbol:
+                score += 1
+            elif self.current_state[x][y + 1] == '.' or self.current_state[x][y + 1] == '#':
+                score += 0
+            else:
+                score -= 1
+        if y - 1 > 0:
+            if self.current_state[x][y - 1] == symbol:
+                score += 1
+            elif self.current_state[x][y - 1] == '.' or self.current_state[x][y - 1] == '#':
+                score += 0
+            else:
+                score -= 1
+        if y + 1 < self.n and x + 1 < self.n:
+            if self.current_state[x + 1][y + 1] == symbol:
+                score += 2
+            elif self.current_state[x + 1][y + 1] == '.' or self.current_state[x + 1][y + 1] == '#':
+                score += 0
+            else:
+                score -= 2
+        if y - 1 > 0 and x - 1 > 0:
+            if self.current_state[x - 1][y - 1] == symbol:
+                score += 2
+            elif self.current_state[x - 1][y - 1] == '.' or self.current_state[x - 1][y - 1] == '#':
+                score += 0
+            else:
+                score -= 2
+        if x - 1 > 0 and y + 1 < self.n:
+            if self.current_state[x - 1][y + 1] == symbol:
+                score += 2
+            elif self.current_state[x - 1][y + 1] == '.' or self.current_state[x - 1][y + 1] == '#':
+                score += 0
+            else:
+                score -= 2
+        if x + 1 < self.n and y - 1 > 0:
+            if self.current_state[x + 1][y - 1] == symbol:
+                score += 2
+            elif self.current_state[x + 1][y - 1] == '.' or self.current_state[x + 1][y - 1] == '#':
+                score += 0
+            else:
+                score -= 2
         return score
 
     # def e2(self, x, y):
@@ -448,7 +474,7 @@ def main():
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
-    g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI, heur=Game.E1)
+    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur=Game.E1)
 
 
 if __name__ == "__main__":
