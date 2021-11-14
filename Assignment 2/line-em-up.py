@@ -21,6 +21,7 @@ class Game:
     currentD2 = 0
     currentT = 0.0
     miniMaxStartT = 0.0
+    alphaBetaStartT = 0.0
 
     def __init__(self, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0.0):
         self.n = n
@@ -252,6 +253,10 @@ class Game:
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
 
+        # Updating the timer at intervals every time the alphabeta() method is called
+        alphaBetaEndT = time.time()
+        self.currentT = round(alphaBetaEndT - self.alphaBetaStartT, 7)
+
         value = 2
         if max:
             value = -2
@@ -271,9 +276,20 @@ class Game:
             # only change to these for loops is the limits of each range for i and j
             # functionality for alpha-beta remains the same
             for j in range(0, self.n):
+
+                if (self.currentD1 >= self.d1 != 0) or (self.currentD2 >= self.d2 != 0):
+                    # or self.is_end():
+                    return (value, x, y)
+
+                if self.currentT >= self.t != 0:
+                    print(F'\nPlayer {self.player_turn} under AI control has taken too long to decide.'
+                          F'\nPlayer {self.switch_player()} has won!')
+                    exit(0)
+
                 if self.current_state[i][j] == '.':
                     if max:
                         self.current_state[i][j] = 'O'
+                        self.currentD2 += 1
                         (v, _, _) = self.alphabeta(alpha, beta, max=False)
                         if v > value:
                             value = v
@@ -281,6 +297,7 @@ class Game:
                             y = j
                     else:
                         self.current_state[i][j] = 'X'
+                        self.currentD1 += 1
                         (v, _, _) = self.alphabeta(alpha, beta, max=True)
                         if v < value:
                             value = v
@@ -317,7 +334,8 @@ class Game:
             self.currentD1 = 0
             self.currentD2 = 0
             self.currentT = 0.0
-            self.minimMaxStartT = 0.0
+            self.miniMaxStartT = 0.0
+            self.alphaBetaStartT = 0.0
 
             if (self.player_turn == 'X' and player_x == self.HUMAN) or (
                     self.player_turn == 'O' and player_o == self.HUMAN):
@@ -328,12 +346,11 @@ class Game:
                 if algo == self.MINIMAX:
                     self.miniMaxStartT = time.time()
                     if self.player_turn == 'X':
-                        # self.currentT = round(minimMaxstart - start, 7)
                         (_, x, y) = self.minimax(max=False)
                     else:
-                        # self.currentT = round(minimMaxstart - start, 7)
                         (_, x, y) = self.minimax(max=True)
-                else:  # algo == self.ALPHABETA
+                else: # algo == self.ALPHABETA:
+                    self.alphaBetaStartT = time.time()
                     if self.player_turn == 'X':
                         (m, x, y) = self.alphabeta(max=False)
                     else:
@@ -348,10 +365,12 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(n=4, b=5, s=3, d1=300000, d2=300000, t=5)
+    g = Game(n=3, b=0, s=3, d1=300000, d2=300000, t=20)
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
-    g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
+    # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
+
+    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI)
 
 if __name__ == "__main__":
     main()
