@@ -312,26 +312,30 @@ class Game:
                         self.current_state[i][j] = 'O'
                         self.currentD2 += 1
                         (v, k, l) = self.alphabeta(alpha, beta, max=False, heur=heur)
-                        if v > value:
-                            print(" i: " + str(i) + " j: " + str(j) +  " value: " + str(value) + " k: " + str(k) + " l: " + str(l) + " v: " + str(v))
-                            # and k is not None and l is not None:
+                        # this will set the value to v and the coordinate to the best possible child
+                        # will then go back up the recursion ladder and compare with another possibility
+                        if v > value and k is not None and l is not None:
+                            # print(" i: " + str(i) + " j: " + str(j) +  " value: " + str(value) + " k: " + str(k) + " l: " + str(l) + " v: " + str(v))
                             value = v
                             x = k
                             y = l
-                        else:
+                        else:  # choose the current value and coordinate (since above is invalid)
+                            # so it will go back up the recursion ladder and compare with another possibility
                             x = i
                             y = j
                     else:
                         self.current_state[i][j] = 'X'
                         self.currentD1 += 1
                         (v, k, l) = self.alphabeta(alpha, beta, max=True, heur=heur)
-                        if v < value:
-                            print(" i: " + str(i) + " j: " + str(j) +  " value: " + str(value) + " k: " + str(k) + " l: " + str(l) + " v: " + str(v))
-                            # and k is not None and l is not None
+                        # this will set the value to v and the coordinate to the best possible child
+                        # will then go back up the recursion ladder and compare with another possibility
+                        if v < value and k is not None and l is not None:
+                            # print(" i: " + str(i) + " j: " + str(j) +  " value: " + str(value) + " k: " + str(k) + " l: " + str(l) + " v: " + str(v))
                             value = v
                             x = k
                             y = l
-                        else:
+                        else:  # choose the current value and coordinate (since above is invalid)
+                            # so it will go back up the recursion ladder and compare with another possibility
                             x = i
                             y = j
                     self.current_state[i][j] = '.'
@@ -472,7 +476,7 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(n=2, b=2, s=2, d1=300000, d2=300000, t=20)
+    g = Game(n=4, b=4, s=4, d1=300000, d2=300000, t=20)
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
