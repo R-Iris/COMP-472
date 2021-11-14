@@ -1,0 +1,170 @@
+n=4 b=2 s=4 t=5
+blocs=[[0, 0], [1, 1]]
+
+Player 1: HUMAN d=300000 a=True e1(regular)
+Player 2: AI d=300000 a=True e2(defensive)
+
+
+	 0 1 2 3
+ 0 | # . . . 
+ 1 | . # . . 
+ 2 | . . . . 
+ 3 | . . . . 
+
+
+Player X under HUMAN control plays: x = 3, y = 3
+
+	 0 1 2 3
+ 0 | # . . . 
+ 1 | . # . . 
+ 2 | . . . . 
+ 3 | . . . X 
+
+
+
+Player O under AI control plays: x = 0, y = 1
+
+i Evaluation time: 1.317507s
+
+
+	 0 1 2 3
+ 0 | # . . . 
+ 1 | O # . . 
+ 2 | . . . . 
+ 3 | . . . X 
+
+
+Player X under HUMAN control plays: x = 3, y = 2
+
+	 0 1 2 3
+ 0 | # . . . 
+ 1 | O # . . 
+ 2 | . . . X 
+ 3 | . . . X 
+
+
+
+Player O under AI control plays: x = 0, y = 2
+
+i Evaluation time: 0.8177819s
+
+
+	 0 1 2 3
+ 0 | # . . . 
+ 1 | O # . . 
+ 2 | O . . X 
+ 3 | . . . X 
+
+
+Player X under HUMAN control plays: x = 3, y = 1
+
+	 0 1 2 3
+ 0 | # . . . 
+ 1 | O # . X 
+ 2 | O . . X 
+ 3 | . . . X 
+
+
+
+Player O under AI control plays: x = 3, y = 0
+
+i Evaluation time: 1.0392511s
+
+
+	 0 1 2 3
+ 0 | # . . O 
+ 1 | O # . X 
+ 2 | O . . X 
+ 3 | . . . X 
+
+
+Player X under HUMAN control plays: x = 2, y = 3
+
+	 0 1 2 3
+ 0 | # . . O 
+ 1 | O # . X 
+ 2 | O . . X 
+ 3 | . . X X 
+
+
+
+Player O under AI control plays: x = 0, y = 3
+
+i Evaluation time: 0.0169749s
+
+
+	 0 1 2 3
+ 0 | # . . O 
+ 1 | O # . X 
+ 2 | O . . X 
+ 3 | O . X X 
+
+
+Player X under HUMAN control plays: x = 2, y = 2
+
+	 0 1 2 3
+ 0 | # . . O 
+ 1 | O # . X 
+ 2 | O . X X 
+ 3 | O . X X 
+
+
+
+Player O under AI control plays: x = 1, y = 0
+
+i Evaluation time: 0.0s
+
+
+	 0 1 2 3
+ 0 | # O . O 
+ 1 | O # . X 
+ 2 | O . X X 
+ 3 | O . X X 
+
+
+Player X under HUMAN control plays: x = 2, y = 1
+
+	 0 1 2 3
+ 0 | # O . O 
+ 1 | O # X X 
+ 2 | O . X X 
+ 3 | O . X X 
+
+
+
+Player O under AI control plays: x = 2, y = 0
+
+i Evaluation time: 0.0s
+
+
+	 0 1 2 3
+ 0 | # O O O 
+ 1 | O # X X 
+ 2 | O . X X 
+ 3 | O . X X 
+
+
+Player X under HUMAN control plays: x = 1, y = 3
+
+	 0 1 2 3
+ 0 | # O O O 
+ 1 | O # X X 
+ 2 | O . X X 
+ 3 | O X X X 
+
+
+
+Player O under AI control plays: x = 1, y = 2
+
+i Evaluation time: 0.0s
+
+
+	 0 1 2 3
+ 0 | # O O O 
+ 1 | O # X X 
+ 2 | O O X X 
+ 3 | O X X X 
+
+
+
+It's a tie!

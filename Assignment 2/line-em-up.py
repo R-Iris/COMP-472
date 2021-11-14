@@ -1,7 +1,8 @@
 # based on code from https://stackabuse.com/minimax-and-alpha-beta-pruning-in-python
-
+import sys
 import time
 import random
+import numpy as np
 
 
 # n: initgame, isend, minimax, alphabeta
@@ -31,12 +32,14 @@ class Game:
         self.bboard = bboard
         self.s = s
         self.d1 = d1  # M ax value of d1
-        # self.currentD1 = 0
         self.d2 = d2  # Max value of d2
-        # self.currentD2 = 0
         self.t = t  # Max value of t
-        # self.currentT = 0
         self.initialize_game()
+        self.file = open(F'gameTrace-{self.n}{self.b}{self.s}{self.t}.txt', 'w')
+
+        # Writing the first line to the file
+        self.file.write(F'n={self.n} b={self.b} s={self.s} t={self.t}\n')
+        self.file.write(F'blocs={self.bboard}\n\n')
 
     def initialize_game(self):
         self.current_state = [['.' for x in range(self.n)] for y in range(self.n)]
@@ -58,11 +61,19 @@ class Game:
 
     def draw_board(self):
         print()
+        self.file.write('\n\t')
+        for z in range(0, self.n):
+            self.file.write(F' {z}')
+        self.file.write('\n')
         for y in range(0, self.n):
+            self.file.write(F' {y} | ')
             for x in range(0, self.n):
                 print(F'{self.current_state[x][y]}', end="")
+                self.file.write(F'{self.current_state[x][y]} ')
             print()
+            self.file.write('\n')
         print()
+        self.file.write('\n\n')
 
     def is_valid(self, px, py):
         if px < 0 or px > self.n - 1 or py < 0 or py > self.n - 1:
@@ -152,10 +163,13 @@ class Game:
         if self.result != None:
             if self.result == 'X':
                 print('The winner is X!')
+                self.file.write('\nThe winner is X!')
             elif self.result == 'O':
                 print('The winner is O!')
+                self.file.write('\nThe winner is O!')
             elif self.result == '.':
                 print("It's a tie!")
+                self.file.write("\nIt's a tie!")
             self.initialize_game()
         return self.result
 
@@ -218,6 +232,8 @@ class Game:
                 if self.currentT >= self.t != 0:
                     print(F'\nPlayer {self.player_turn} under AI control has taken too long to decide.'
                           F'\nPlayer {self.switch_player()} has won!')
+                    self.file.write(F'\nPlayer {self.player_turn} under AI control has taken too long to decide.'
+                                    F'\nPlayer {self.switch_player()} has won!')
                     exit(0)
 
                 if self.current_state[i][j] == '.':
@@ -273,7 +289,7 @@ class Game:
             return (1, x, y)
         elif result == '.':
             return (0, x, y)
-        
+
         for i in range(0, self.n):
             # only change to these for loops is the limits of each range for i and j
             # functionality for alpha-beta remains the same
@@ -304,7 +320,7 @@ class Game:
                                     y = l
                             elif heur == self.E2:
                                 print("hello :)")
-                                #e2(x,y)
+                                # e2(x,y)
                             else:
                                 value = v
                                 x = i
@@ -325,7 +341,7 @@ class Game:
                                     y = l
                             elif heur == self.E2:
                                 print("hello :)")
-                                #e2(x,y)
+                                # e2(x,y)
                             else:
                                 value = v
                                 x = i
@@ -343,32 +359,36 @@ class Game:
                             beta = value
         return (value, x, y)
 
-# WHERE WE LEFT OFF, FOR SOME REASON IT READS X/Y AS NONE
+    # WHERE WE LEFT OFF, FOR SOME REASON IT READS X/Y AS NONE
     def e1(self, x, y):
         score = 0
         val = self.current_state[x][y]
-        if x+1 < self.n and self.current_state[x+1][y] == val:
+        if x + 1 < self.n and self.current_state[x + 1][y] == val:
             score += 1
-        if x-1 > 0 and self.current_state[x-1][y] == val:
+        if x - 1 > 0 and self.current_state[x - 1][y] == val:
             score += 1
-        if y+1 < self.n and self.current_state[x][y+1] == val:
+        if y + 1 < self.n and self.current_state[x][y + 1] == val:
             score += 1
-        if y-1 > 0 and self.current_state[x][y-1] == val:
+        if y - 1 > 0 and self.current_state[x][y - 1] == val:
             score += 1
-        if y+1 < self.n and x+1 < self.n and self.current_state[x+1][y+1] == val:
+        if y + 1 < self.n and x + 1 < self.n and self.current_state[x + 1][y + 1] == val:
             score += 2
-        if y-1 > 0 and x-1 > 0 and self.current_state[x-1][y-1] == val:
+        if y - 1 > 0 and x - 1 > 0 and self.current_state[x - 1][y - 1] == val:
             score += 2
-        if x-1 > 0 and y+1 < self.n and self.current_state[x-1][y+1] == val:
+        if x - 1 > 0 and y + 1 < self.n and self.current_state[x - 1][y + 1] == val:
             score += 2
-        if x+1 < self.n and y-1 > 0 and self.current_state[x+1][y-1] == val:
+        if x + 1 < self.n and y - 1 > 0 and self.current_state[x + 1][y - 1] == val:
             score += 2
         return score
 
-    #def e2(self, x, y):
-
+    # def e2(self, x, y):
 
     def play(self, algo=None, player_x=None, player_o=None, heur=None):
+        self.file.write(
+            F'Player 1: {"HUMAN" if player_x == self.HUMAN else "AI"} d={self.d1} a={"True" if algo is not None else "False"} '
+            F'e1('F'regular)\n'
+            F'Player 2: {"HUMAN" if player_o == self.HUMAN else "AI"} d={self.d2} a={"True" if algo is not None else "False"} '
+            F'e2('F'defensive)\n\n')
         if algo == None:
             algo = self.ALPHABETA
         if heur == None:
@@ -394,6 +414,7 @@ class Game:
             if (self.player_turn == 'X' and player_x == self.HUMAN) or (
                     self.player_turn == 'O' and player_o == self.HUMAN):
                 (x, y) = self.input_move()
+                self.file.write(F'Player {self.player_turn} under HUMAN control plays: x = {x}, y = {y}\n')
             if (self.player_turn == 'X' and player_x == self.AI) or (self.player_turn == 'O' and player_o == self.AI):
 
                 start = time.time()
@@ -403,7 +424,7 @@ class Game:
                         (_, x, y) = self.minimax(max=False)
                     else:
                         (_, x, y) = self.minimax(max=True)
-                else: # algo == self.ALPHABETA:
+                else:  # algo == self.ALPHABETA:
                     self.alphaBetaStartT = time.time()
                     if self.player_turn == 'X':
                         (m, x, y) = self.alphabeta(max=False, heur=heur)
@@ -414,18 +435,20 @@ class Game:
                 print("Maximum D1: " + str(self.currentD1) + " || Maximum D2: " + str(self.currentD2))
                 print(F'Evaluation time: {round(end - start, 7)}s')
                 print(F'Player {self.player_turn} under AI control plays: x = {x}, y = {y}')
+                self.file.write(F'\nPlayer {self.player_turn} under AI control plays: x = {x}, y = {y}\n\n')
+                self.file.write(
+                    F'i Evaluation time: {round(end - start, 7)}s\n\n')  # THIS SHOULD BE THE TIME FOR THE HEURISTIC
             self.current_state[x][y] = self.player_turn
             self.switch_player()
 
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(n=3, b=0, s=3, d1=300000, d2=300000, t=20)
+    g = Game(n=3, b=0, s=3, d1=300000, d2=300000, t=5)
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
-
-    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur=Game.E1)
+    g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI, heur=Game.E1)
 
 
 if __name__ == "__main__":
