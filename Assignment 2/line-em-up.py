@@ -262,7 +262,7 @@ class Game:
 
         return (value, x, y)
 
-    def alphabeta(self, alpha=-2, beta=2, max=False, heur=None):
+    def alphabeta(self, alpha=-1000, beta=1000, max=False, heur=None):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
@@ -274,9 +274,9 @@ class Game:
         alphaBetaEndT = time.time()
         self.currentT = round(alphaBetaEndT - self.alphaBetaStartT, 7)
 
-        value = 100
+        value = 1000
         if max:
-            value = -100
+            value = -1000
         x = None
         y = None
 
@@ -312,7 +312,9 @@ class Game:
                         self.current_state[i][j] = 'O'
                         self.currentD2 += 1
                         (v, k, l) = self.alphabeta(alpha, beta, max=False, heur=heur)
-                        if v > value and k is not None and l is not None:
+                        if v > value:
+                            print(" i: " + str(i) + " j: " + str(j) +  " value: " + str(value) + " k: " + str(k) + " l: " + str(l) + " v: " + str(v))
+                            # and k is not None and l is not None:
                             value = v
                             x = k
                             y = l
@@ -323,7 +325,9 @@ class Game:
                         self.current_state[i][j] = 'X'
                         self.currentD1 += 1
                         (v, k, l) = self.alphabeta(alpha, beta, max=True, heur=heur)
-                        if v < value and k is not None and l is not None:
+                        if v < value:
+                            print(" i: " + str(i) + " j: " + str(j) +  " value: " + str(value) + " k: " + str(k) + " l: " + str(l) + " v: " + str(v))
+                            # and k is not None and l is not None
                             value = v
                             x = k
                             y = l
@@ -468,7 +472,7 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(n=4, b=3, s=4, d1=300000, d2=300000, t=5)
+    g = Game(n=2, b=2, s=2, d1=300000, d2=300000, t=20)
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
