@@ -2,7 +2,6 @@
 import sys
 import time
 import random
-import numpy as np
 
 
 # n: initgame, isend, minimax, alphabeta
@@ -304,17 +303,16 @@ class Game:
                           F'\nPlayer {self.switch_player()} has won!')
                     exit(0)
 
-                if heur == self.E1:
-                    value = self.e1(x=i, y=j)
-                #elif heur == self.E2:
-                    # e2
-
                 if self.current_state[i][j] == '.':
+                    if heur == self.E1:
+                        value = self.e1(x=i, y=j)
+                    # elif heur == self.E2:
+                    # e2
                     if max:
                         self.current_state[i][j] = 'O'
                         self.currentD2 += 1
                         (v, k, l) = self.alphabeta(alpha, beta, max=False, heur=heur)
-                        if v > value:
+                        if v > value and k is not None and l is not None:
                             value = v
                             x = k
                             y = l
@@ -325,7 +323,7 @@ class Game:
                         self.current_state[i][j] = 'X'
                         self.currentD1 += 1
                         (v, k, l) = self.alphabeta(alpha, beta, max=True, heur=heur)
-                        if v < value:
+                        if v < value and k is not None and l is not None:
                             value = v
                             x = k
                             y = l
@@ -379,32 +377,32 @@ class Game:
                 score -= 1
         if y + 1 < self.n and x + 1 < self.n:
             if self.current_state[x + 1][y + 1] == symbol:
-                score += 2
+                score += 5
             elif self.current_state[x + 1][y + 1] == '.' or self.current_state[x + 1][y + 1] == '#':
                 score += 0
             else:
-                score -= 2
+                score -= 5
         if y - 1 > 0 and x - 1 > 0:
             if self.current_state[x - 1][y - 1] == symbol:
-                score += 2
+                score += 5
             elif self.current_state[x - 1][y - 1] == '.' or self.current_state[x - 1][y - 1] == '#':
                 score += 0
             else:
-                score -= 2
+                score -= 5
         if x - 1 > 0 and y + 1 < self.n:
             if self.current_state[x - 1][y + 1] == symbol:
-                score += 2
+                score += 5
             elif self.current_state[x - 1][y + 1] == '.' or self.current_state[x - 1][y + 1] == '#':
                 score += 0
             else:
-                score -= 2
+                score -= 5
         if x + 1 < self.n and y - 1 > 0:
             if self.current_state[x + 1][y - 1] == symbol:
-                score += 2
+                score += 5
             elif self.current_state[x + 1][y - 1] == '.' or self.current_state[x + 1][y - 1] == '#':
                 score += 0
             else:
-                score -= 2
+                score -= 5
         return score
 
     # def e2(self, x, y):
@@ -470,7 +468,7 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(n=3, b=0, s=3, d1=300000, d2=300000, t=5)
+    g = Game(n=4, b=3, s=4, d1=300000, d2=300000, t=5)
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
