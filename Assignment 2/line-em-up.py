@@ -251,11 +251,14 @@ class Game:
         # 0  - a tie
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
+
         value = 2
         if max:
             value = -2
         x = None
         y = None
+
+        # Evaluation Function
         result = self.is_end()
         if result == 'X':
             return (-1, x, y)
@@ -263,6 +266,7 @@ class Game:
             return (1, x, y)
         elif result == '.':
             return (0, x, y)
+        
         for i in range(0, self.n):
             # only change to these for loops is the limits of each range for i and j
             # functionality for alpha-beta remains the same
