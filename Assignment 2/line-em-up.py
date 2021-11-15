@@ -313,8 +313,8 @@ class Game:
                 if self.current_state[i][j] == '.':
                     if heur == self.E1:
                         value = self.e1(x=i, y=j)
-                    # elif heur == self.E2:
-                    # e2
+                    elif heur == self.E2:
+                        value = self.e2(x=i, y=j)
                     if max:
                         self.current_state[i][j] = 'O'
                         self.currentStatesD2 += 1
