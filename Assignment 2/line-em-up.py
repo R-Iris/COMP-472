@@ -28,10 +28,13 @@ class Game:
     heuE1Counter = 0
     heuE2Counter = 0
     heuTOTAL = 0
+    AVGStates = 0.0
 
     dictDepthD1 = {}
     dictDepthD2 = {}
     dictTOTALbyDepth = {}
+
+    numberOfMoves = 0
 
     listOfTimes = []
 
@@ -188,12 +191,10 @@ class Game:
             print(self.dictTOTALbyDepth)
             print(self.dictDepthD1)
             print(self.dictDepthD2)
-            sum1 = sum(self.dictDepthD1.values())
-            sum2 = sum(self.dictDepthD2.values())
-            finalDict = self.dictDepthD1.update(self.dictDepthD2)
             self.file.write(F'(b)ii\tTotal heuristic evaluations: {self.heuTOTAL}\n')
             self.file.write(F'6(b)iii\tEvaluations by depth: {self.dictTOTALbyDepth}\n')
-            #self.file.write(F'6(b)iv\tTotal number of states evaluated at each depth: {round(np.array(list(self.dictDepthD1.update(self.dictDepthD2).values())).mean(),3)}\n')
+            self.file.write(F'6(b)iv\tAverage evaluation depth: {round(self.AVGStates/self.numberOfMoves, 3)}\n')
+            self.file.write(F'6(b)vi\tTotal number of moves: {self.numberOfMoves}\n')
 
             self.initialize_game()
         return self.result
@@ -841,6 +842,7 @@ class Game:
                     self.file.write(F'ii Heuristic evaluations: {self.heuE1Counter if heur_x==self.E1 else self.heuE2Counter}\n')
                     self.file.write(F'iii Evaluations by depth: {dict(sorted(self.dictDepthD1.items()))}\n')
                     self.file.write(F'iv Average evaluation depth: {round(np.array(list(self.dictDepthD1.keys())).mean(), 3)}\n')
+                    self.AVGStates += round(np.array(list(self.dictDepthD1.keys())).mean(), 3)
                     for key, value in self.dictDepthD1.items():
                         if key not in self.dictTOTALbyDepth:
                             self.dictTOTALbyDepth[key] = value
@@ -849,8 +851,9 @@ class Game:
 
                 else:
                     self.file.write(F'ii Heuristic evaluations: {self.heuE1Counter if heur_o==self.E1 else self.heuE2Counter}\n')
-                    self.file.write(F'iii Evaluations by depth: {dict(sorted(self.dictDepthD2.items()))}\n\n')
+                    self.file.write(F'iii Evaluations by depth: {dict(sorted(self.dictDepthD2.items()))}\n')
                     self.file.write(F'iv Average evaluation depth: {round(np.array(list(self.dictDepthD2.keys())).mean(), 3)}\n')
+                    self.AVGStates += round(np.array(list(self.dictDepthD1.keys())).mean(), 3)
                     for key, value in self.dictDepthD2.items():
                         if key not in self.dictTOTALbyDepth:
                             self.dictTOTALbyDepth[key] = value
@@ -858,6 +861,7 @@ class Game:
                             self.dictTOTALbyDepth[key] += value
 
             self.current_state[x][y] = self.player_turn
+            self.numberOfMoves += 1
             self.switch_player()
 
 
