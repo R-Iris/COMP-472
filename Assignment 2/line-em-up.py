@@ -215,8 +215,6 @@ class Game:
         x = None
         y = None
 
-        depth += 1
-
         # Evaluation Function
         result = self.is_end()
         if result == 'X':
@@ -232,7 +230,7 @@ class Game:
             for j in range(0, self.n):  # change hardcoded 3 to self.n
 
                 #if (self.currentStatesD1 >= self.d1 != 0) or (self.currentStatesD2 >= self.d2 != 0):
-                if depth >= self.d1 != 0 or depth >= self.d2 != 0:
+                if depth == 0:
                     # or self.is_end():
                     return (value, x, y)
 
@@ -250,7 +248,7 @@ class Game:
                         self.currentStatesD2 += 1
 
                         # print("D2 depth: " + str(self.currentD2))
-                        (v, _, _) = self.minimax(max=False)
+                        (v, _, _) = self.minimax(max=False, depth=depth-1)
                         if v > value:
                             value = v
                             x = i
@@ -261,7 +259,7 @@ class Game:
                         self.currentStatesD1 += 1
 
                         # print("D1 depth: " + str(self.currentD1))
-                        (v, _, _) = self.minimax(max=True)
+                        (v, _, _) = self.minimax(max=True, depth=depth-1)
                         if v < value:
                             value = v
                             x = i
@@ -721,7 +719,6 @@ class Game:
             self.currentT = 0.0
             self.miniMaxStartT = 0.0
             self.alphaBetaStartT = 0.0
-            depth = -1
 
             if (self.player_turn == 'X' and player_x == self.HUMAN) or (
                     self.player_turn == 'O' and player_o == self.HUMAN):
@@ -732,9 +729,9 @@ class Game:
                 if algo == self.MINIMAX:
                     self.miniMaxStartT = time.time()
                     if self.player_turn == 'X':
-                        (_, x, y) = self.minimax(max=False, depth=depth)
+                        (_, x, y) = self.minimax(max=False, depth=self.d1)
                     else:
-                        (_, x, y) = self.minimax(max=True, depth=depth)
+                        (_, x, y) = self.minimax(max=True, depth=self.d2)
                 else:  # algo == self.ALPHABETA:
                     self.alphaBetaStartT = time.time()
                     if self.player_turn == 'X':
@@ -743,7 +740,7 @@ class Game:
                         (m, x, y) = self.alphabeta(max=True, heur=heur_o)
                 end = time.time()
 
-                print("Current depth: " + str(depth))
+                #print("Current depth: " + str(self.depth))
                 print("Maximum D1: " + str(self.currentStatesD1) + " || Maximum D2: " + str(self.currentStatesD2))
                 print(F'Evaluation time: {round(end - start, 7)}s')
                 print(F'Player {self.player_turn} under AI control plays: x = {x}, y = {y}')
