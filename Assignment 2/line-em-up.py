@@ -229,10 +229,11 @@ class Game:
         for i in range(0, self.n):  # change hardcoded 3 to self.n
             for j in range(0, self.n):  # change hardcoded 3 to self.n
 
-                #if (self.currentStatesD1 >= self.d1 != 0) or (self.currentStatesD2 >= self.d2 != 0):
                 if depth == 0:
                     # or self.is_end():
                     return (value, x, y)
+
+                #if (self.currentStatesD1 >= self.d1 != 0) or (self.currentStatesD2 >= self.d2 != 0):
 
                 if self.currentT >= self.t != 0:
                     print(F'\nPlayer {self.player_turn} under AI control has taken too long to decide.'
@@ -244,6 +245,9 @@ class Game:
                 if self.current_state[i][j] == '.':
                     if max:
                         self.current_state[i][j] = 'O'
+                        if depth == self.d2:
+                            x = i
+                            y = j
                         # d2 is the 2nd player because O starts second
                         self.currentStatesD2 += 1
 
@@ -255,6 +259,9 @@ class Game:
                             y = j
                     else:
                         self.current_state[i][j] = 'X'
+                        if depth == self.d1:
+                            x = i
+                            y = j
                         # d1 is the 1st player because X starts first
                         self.currentStatesD1 += 1
 
@@ -267,7 +274,7 @@ class Game:
                     self.current_state[i][j] = '.'
         return (value, x, y)
 
-    def alphabeta(self, alpha=-10000, beta=10000, max=False, heur=None):
+    def alphabeta(self, alpha=-10000, beta=10000, max=False, heur=None, depth=0):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
@@ -299,8 +306,7 @@ class Game:
             # functionality for alpha-beta remains the same
             for j in range(0, self.n):
 
-                if (self.currentStatesD1 >= self.d1 != 0) or (self.currentStatesD2 >= self.d2 != 0):
-                    # or self.is_end():
+                if depth == 0:
                     return (value, x, y)
 
                 if self.currentT >= self.t != 0:
@@ -316,7 +322,7 @@ class Game:
                     if max:
                         self.current_state[i][j] = 'O'
                         self.currentStatesD2 += 1
-                        (v, k, l) = self.alphabeta(alpha, beta, max=False, heur=heur)
+                        (v, k, l) = self.alphabeta(alpha, beta, max=False, heur=heur, depth=depth-1)
                         # this will set the value to v and the coordinate to the best possible child
                         # will then go back up the recursion ladder and compare with another possibility
                         if v > value and k is not None and l is not None:
@@ -331,7 +337,7 @@ class Game:
                     else:
                         self.current_state[i][j] = 'X'
                         self.currentStatesD1 += 1
-                        (v, k, l) = self.alphabeta(alpha, beta, max=True, heur=heur)
+                        (v, k, l) = self.alphabeta(alpha, beta, max=True, heur=heur, depth=depth-1)
                         # this will set the value to v and the coordinate to the best possible child
                         # will then go back up the recursion ladder and compare with another possibility
                         if v < value and k is not None and l is not None:
@@ -356,7 +362,6 @@ class Game:
                             beta = value
         return (value, x, y)
 
-    # WHERE WE LEFT OFF, FOR SOME REASON IT READS X/Y AS NONE
     def e1(self, x, y):
         self.heuE1Counter += 1
 
@@ -510,9 +515,15 @@ class Game:
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
-                    score += 1
+                    if self.player_turn == 'O':
+                        score += 1
+                    else:
+                        score -= 1
                 elif ithSymbol == symbol:
-                    score += self.n - i
+                    if self.player_turn == 'O':
+                        score += self.n - i
+                    else:
+                        score -= self.n - i
                 else:
                     break
                 i += 1
@@ -523,9 +534,15 @@ class Game:
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
-                    score += 1
+                    if self.player_turn == 'O':
+                        score += 1
+                    else:
+                        score -= 1
                 elif ithSymbol == symbol:
-                    score += self.n - i
+                    if self.player_turn == 'O':
+                        score += self.n - i
+                    else:
+                        score -= self.n - i
                 else:
                     break
                 i += 1
@@ -560,9 +577,15 @@ class Game:
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
-                    score += 1
+                    if self.player_turn == 'O':
+                        score += 1
+                    else:
+                        score -= 1
                 elif ithSymbol == symbol:
-                    score += self.n - i
+                    if self.player_turn == 'O':
+                        score += self.n - i
+                    else:
+                        score -= self.n - i
                 else:
                     break
                 i += 1
@@ -573,9 +596,15 @@ class Game:
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
-                    score += 1
+                    if self.player_turn == 'O':
+                        score += 1
+                    else:
+                        score -= 1
                 elif ithSymbol == symbol:
-                    score += self.n - i
+                    if self.player_turn == 'O':
+                        score += self.n - i
+                    else:
+                        score -= self.n - i
                 else:
                     break
                 i += 1
@@ -610,9 +639,15 @@ class Game:
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
-                    score += 1
+                    if self.player_turn == 'O':
+                        score += 1
+                    else:
+                        score -= 1
                 elif ithSymbol == symbol:
-                    score += self.n - i
+                    if self.player_turn == 'O':
+                        score += self.n - i
+                    else:
+                        score -= self.n - i
                 else:
                     break
                 i += 1
@@ -623,9 +658,15 @@ class Game:
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
-                    score += 1
+                    if self.player_turn == 'O':
+                        score += 1
+                    else:
+                        score -= 1
                 elif ithSymbol == symbol:
-                    score += self.n - i
+                    if self.player_turn == 'O':
+                        score += self.n - i
+                    else:
+                        score -= self.n - i
                 else:
                     break
                 i += 1
@@ -660,9 +701,15 @@ class Game:
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
-                    score += 1
+                    if self.player_turn == 'O':
+                        score += 1
+                    else:
+                        score -= 1
                 elif ithSymbol == symbol:
-                    score += self.n - i
+                    if self.player_turn == 'O':
+                        score += self.n - i
+                    else:
+                        score -= self.n - i
                 else:
                     break
                 i += 1
@@ -673,9 +720,15 @@ class Game:
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
-                    score += 1
+                    if self.player_turn == 'O':
+                        score += 1
+                    else:
+                        score -= 1
                 elif ithSymbol == symbol:
-                    score += self.n - i
+                    if self.player_turn == 'O':
+                        score += self.n - i
+                    else:
+                        score -= self.n - i
                 else:
                     break
                 i += 1
@@ -735,13 +788,13 @@ class Game:
                 else:  # algo == self.ALPHABETA:
                     self.alphaBetaStartT = time.time()
                     if self.player_turn == 'X':
-                        (m, x, y) = self.alphabeta(max=False, heur=heur_x)
+                        (m, x, y) = self.alphabeta(max=False, heur=heur_x, depth=self.d1)
                     else:
-                        (m, x, y) = self.alphabeta(max=True, heur=heur_o)
+                        (m, x, y) = self.alphabeta(max=True, heur=heur_o, depth=self.d2)
                 end = time.time()
 
                 #print("Current depth: " + str(self.depth))
-                print("Maximum D1: " + str(self.currentStatesD1) + " || Maximum D2: " + str(self.currentStatesD2))
+                print("States checked for P1: " + str(self.currentStatesD1) + " || States checked for P2: " + str(self.currentStatesD2))
                 print(F'Evaluation time: {round(end - start, 7)}s')
                 print(F'Player {self.player_turn} under AI control plays: x = {x}, y = {y}')
                 self.file.write(F'\nPlayer {self.player_turn} under AI control plays:  {chr(x + 65)} {y}\n\n')
@@ -755,11 +808,8 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(n=3, b=0, s=3, d1=4, d2=8, t=9)
-    # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
-    # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
-    # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
-    g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E1, heur_o=Game.E2)
+    g = Game(n=4, b=2, s=4, d1=4, d2=8, t=9)
+    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E2, heur_o=Game.E2)
 
 
 if __name__ == "__main__":
