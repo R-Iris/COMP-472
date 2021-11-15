@@ -1,8 +1,8 @@
 # based on code from https://stackabuse.com/minimax-and-alpha-beta-pruning-in-python
-import sys
 import time
 import random
-
+import numpy as np
+import collections
 
 # n: initgame, isend, minimax, alphabeta
 
@@ -27,6 +27,13 @@ class Game:
 
     heuE1Counter = 0
     heuE2Counter = 0
+    heuTOTAL = 0
+
+    dictDepthD1 = {}
+    dictDepthD2 = {}
+    dictTOTALbyDepth = {}
+
+    listOfTimes = []
 
     def __init__(self, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0.0):
         self.n = n
@@ -166,13 +173,28 @@ class Game:
         if self.result != None:
             if self.result == 'X':
                 print('The winner is X!')
-                self.file.write('\nThe winner is X!')
+                self.file.write('\nThe winner is X!\n')
+
             elif self.result == 'O':
                 print('The winner is O!')
-                self.file.write('\nThe winner is O!')
+                self.file.write('\nThe winner is O!\n')
+
             elif self.result == '.':
                 print("It's a tie!")
-                self.file.write("\nIt's a tie!")
+                self.file.write("\nIt's a tie!\n")
+
+            self.file.write(F'6(b)i\tAverage evaluation time: {round(np.array(self.listOfTimes).mean(),3)}s\n')
+
+            print(self.dictTOTALbyDepth)
+            print(self.dictDepthD1)
+            print(self.dictDepthD2)
+            sum1 = sum(self.dictDepthD1.values())
+            sum2 = sum(self.dictDepthD2.values())
+            finalDict = self.dictDepthD1.update(self.dictDepthD2)
+            self.file.write(F'(b)ii\tTotal heuristic evaluations: {self.heuTOTAL}\n')
+            self.file.write(F'6(b)iii\tEvaluations by depth: {self.dictTOTALbyDepth}\n')
+            #self.file.write(F'6(b)iv\tTotal number of states evaluated at each depth: {round(np.array(list(self.dictDepthD1.update(self.dictDepthD2).values())).mean(),3)}\n')
+
             self.initialize_game()
         return self.result
 
@@ -286,6 +308,16 @@ class Game:
         alphaBetaEndT = time.time()
         self.currentT = round(alphaBetaEndT - self.alphaBetaStartT, 7)
 
+        # Current dictionary with depths as keys and states visited as values
+        if max and self.currentStatesD2 != 0:
+            currentDepthDect = {depth: self.currentStatesD2}
+            # If we want to maximize, then we're looking at D2 because O maximizes
+            self.dictDepthD2.update(currentDepthDect)
+        elif self.currentStatesD1 != 0:
+            currentDepthDect = {depth: self.currentStatesD1}
+            # If we want to minimize, then we're looking at D1 because X minimizes
+            self.dictDepthD1.update(currentDepthDect)
+
         value = 10000
         if max:
             value = -10000
@@ -364,6 +396,7 @@ class Game:
 
     def e1(self, x, y):
         self.heuE1Counter += 1
+        self.heuTOTAL +=1
 
         score = 0
         symbol = self.current_state[x][y]
@@ -478,6 +511,7 @@ class Game:
 
     def e2(self, x, y):
         self.heuE2Counter += 1
+        self.heuTOTAL += 1
 
         score = 0
         symbol = self.current_state[x][y]
@@ -772,6 +806,8 @@ class Game:
             self.currentT = 0.0
             self.miniMaxStartT = 0.0
             self.alphaBetaStartT = 0.0
+            self.heuE1Counter = 0
+            self.heuE2Counter = 0
 
             if (self.player_turn == 'X' and player_x == self.HUMAN) or (
                     self.player_turn == 'O' and player_o == self.HUMAN):
@@ -795,20 +831,39 @@ class Game:
 
                 #print("Current depth: " + str(self.depth))
                 print("States checked for P1: " + str(self.currentStatesD1) + " || States checked for P2: " + str(self.currentStatesD2))
+                self.listOfTimes.append(round(end - start, 7))
                 print(F'Evaluation time: {round(end - start, 7)}s')
                 print(F'Player {self.player_turn} under AI control plays: x = {x}, y = {y}')
                 self.file.write(F'\nPlayer {self.player_turn} under AI control plays:  {chr(x + 65)} {y}\n\n')
                 self.file.write(
-                    F'i Evaluation time: {round(end - start, 7)}s\n'
-                    F'ii Heuristic evaluations: {self.heuE1Counter if self.E1 is not None else self.heuE2Counter}\n'
-                    F'iii Evaluations by depth: \n\n')
+                    F'i Evaluation time: {round(end - start, 7)}s\n')
+                if self.player_turn == 'X':
+                    self.file.write(F'ii Heuristic evaluations: {self.heuE1Counter if heur_x==self.E1 else self.heuE2Counter}\n')
+                    self.file.write(F'iii Evaluations by depth: {dict(sorted(self.dictDepthD1.items()))}\n')
+                    self.file.write(F'iv Average evaluation depth: {round(np.array(list(self.dictDepthD1.keys())).mean(), 3)}\n')
+                    for key, value in self.dictDepthD1.items():
+                        if key not in self.dictTOTALbyDepth:
+                            self.dictTOTALbyDepth[key] = value
+                        else:
+                            self.dictTOTALbyDepth[key] += value
+
+                else:
+                    self.file.write(F'ii Heuristic evaluations: {self.heuE1Counter if heur_o==self.E1 else self.heuE2Counter}\n')
+                    self.file.write(F'iii Evaluations by depth: {dict(sorted(self.dictDepthD2.items()))}\n\n')
+                    self.file.write(F'iv Average evaluation depth: {round(np.array(list(self.dictDepthD2.keys())).mean(), 3)}\n')
+                    for key, value in self.dictDepthD2.items():
+                        if key not in self.dictTOTALbyDepth:
+                            self.dictTOTALbyDepth[key] = value
+                        else:
+                            self.dictTOTALbyDepth[key] += value
+
             self.current_state[x][y] = self.player_turn
             self.switch_player()
 
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(n=4, b=2, s=4, d1=4, d2=8, t=9)
+    g = Game(n=5, b=1, s=4, d1=4, d2=8, t=9)
     g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E2, heur_o=Game.E2)
 
 
