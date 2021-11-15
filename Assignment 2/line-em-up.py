@@ -355,62 +355,100 @@ class Game:
     def e1(self, x, y):
         score = 0
         symbol = self.current_state[x][y]
-        if x + 1 < self.n:
-            if self.current_state[x + 1][y] == symbol:
-                score += 1
-            elif self.current_state[x + 1][y] == '.' or self.current_state[x + 1][y] == '#':
-                score += 0
+        # 4 cases: Horizontal, Vertical, TL, TR
+        # For each case:- 2 directions
+
+        # Horizontal
+        # -----------
+        # Right
+        i = 0
+        snakeCount = 0
+        while y+i < self.n:
+            ithSymbol = self.current_state[x][y+i]
+            if ithSymbol == symbol or ithSymbol == '.':
+                snakeCount += 1
+                i += 1
             else:
-                score -= 1
-        if x - 1 > 0:
-            if self.current_state[x - 1][y] == symbol:
-                score += 1
-            elif self.current_state[x - 1][y] == '.' or self.current_state[x - 1][y] == '#':
-                score += 0
+                break
+        # Left
+        i = 0
+        while y-i >= 0:
+            ithSymbol = self.current_state[x][y-i]
+            if ithSymbol == symbol or ithSymbol == '.':
+                snakeCount += 1
+                i += 1
             else:
-                score -= 1
-        if y + 1 < self.n:
-            if self.current_state[x][y + 1] == symbol:
-                score += 1
-            elif self.current_state[x][y + 1] == '.' or self.current_state[x][y + 1] == '#':
-                score += 0
+                break
+        # If snakeCount adds up to s (can make a snake on this line)
+        score += snakeCount*8
+        # -----------
+        # Vertical
+        # Down
+        i = 0
+        snakeCount = 0
+        while x+i < self.n:
+            ithSymbol = self.current_state[x+i][y]
+            if ithSymbol == symbol or ithSymbol == '.':
+                snakeCount += 1
+                i += 1
             else:
-                score -= 1
-        if y - 1 > 0:
-            if self.current_state[x][y - 1] == symbol:
-                score += 1
-            elif self.current_state[x][y - 1] == '.' or self.current_state[x][y - 1] == '#':
-                score += 0
+                break
+        # Up
+        i = 0
+        while x-i >= 0:
+            ithSymbol = self.current_state[x-i][y]
+            if ithSymbol == symbol or ithSymbol == '.':
+                snakeCount += 1
+                i += 1
             else:
-                score -= 1
-        if y + 1 < self.n and x + 1 < self.n:
-            if self.current_state[x + 1][y + 1] == symbol:
-                score += 5
-            elif self.current_state[x + 1][y + 1] == '.' or self.current_state[x + 1][y + 1] == '#':
-                score += 0
+                break
+        score += snakeCount*8
+        # -----------
+        # TL
+        # BR
+        i = 0
+        snakeCount = 0
+        while x+i < self.n and y+i < self.n:
+            ithSymbol = self.current_state[x+i][y+i]
+            if ithSymbol == symbol or ithSymbol == '.':
+                snakeCount += 1
+                i += 1
             else:
-                score -= 5
-        if y - 1 > 0 and x - 1 > 0:
-            if self.current_state[x - 1][y - 1] == symbol:
-                score += 5
-            elif self.current_state[x - 1][y - 1] == '.' or self.current_state[x - 1][y - 1] == '#':
-                score += 0
+                break
+        # TL
+        i = 0
+        while x-i >= 0 and y-i >= 0:
+            ithSymbol = self.current_state[x-i][y-i]
+            if ithSymbol == symbol or ithSymbol == '.':
+                snakeCount += 1
+                i += 1
             else:
-                score -= 5
-        if x - 1 > 0 and y + 1 < self.n:
-            if self.current_state[x - 1][y + 1] == symbol:
-                score += 5
-            elif self.current_state[x - 1][y + 1] == '.' or self.current_state[x - 1][y + 1] == '#':
-                score += 0
+                break
+        score += snakeCount*8
+        # -----------
+        # TR
+
+        # BL
+        i = 0
+        snakeCount = 0
+        while x-i >= 0 and y+i < self.n:
+            ithSymbol = self.current_state[x-i][y+i]
+            if ithSymbol == symbol or ithSymbol == '.':
+                snakeCount += 1
+                i += 1
             else:
-                score -= 5
-        if x + 1 < self.n and y - 1 > 0:
-            if self.current_state[x + 1][y - 1] == symbol:
-                score += 5
-            elif self.current_state[x + 1][y - 1] == '.' or self.current_state[x + 1][y - 1] == '#':
-                score += 0
+                break
+        # TR
+        i = 0
+        while x+i < self.n and y-i >= 0:
+            ithSymbol = self.current_state[x+i][y-i]
+            if ithSymbol == symbol or ithSymbol == '.':
+                snakeCount += 1
+                i += 1
             else:
-                score -= 5
+                break
+        score += snakeCount*8
+        # -----------
         return score
 
     def e2(self, x, y):
@@ -683,7 +721,7 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(n=4, b=4, s=4, d1=300000, d2=300000, t=20)
+    g = Game(n=4, b=0, s=4, d1=5000000, d2=5000000, t=20)
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
