@@ -415,7 +415,7 @@ class Game:
 
     # def e2(self, x, y):
 
-    def play(self, algo=None, player_x=None, player_o=None, heur=None):
+    def play(self, algo=None, player_x=None, player_o=None, heur_x=None, heur_o=None):
         self.file.write(
             F'Player 1: {"HUMAN" if player_x == self.HUMAN else "AI"} d={self.d1} a={"True" if algo is not None else "False"} '
             F'e1('F'regular)\n'
@@ -423,8 +423,10 @@ class Game:
             F'e2('F'defensive)\n\n')
         if algo == None:
             algo = self.ALPHABETA
-        if heur == None:
-            heur = self.E1
+        if heur_x == None:
+            heur_1 = self.E1
+        if heur_o == None:
+            heur_2 = self.E2
         if player_x == None:
             player_x = self.HUMAN
         if player_o == None:
@@ -448,7 +450,6 @@ class Game:
                 (x, y) = self.input_move()
                 self.file.write(F'Player {self.player_turn} under HUMAN control plays: x = {x}, y = {y}\n')
             if (self.player_turn == 'X' and player_x == self.AI) or (self.player_turn == 'O' and player_o == self.AI):
-
                 start = time.time()
                 if algo == self.MINIMAX:
                     self.miniMaxStartT = time.time()
@@ -459,9 +460,9 @@ class Game:
                 else:  # algo == self.ALPHABETA:
                     self.alphaBetaStartT = time.time()
                     if self.player_turn == 'X':
-                        (m, x, y) = self.alphabeta(max=False, heur=heur)
+                        (m, x, y) = self.alphabeta(max=False, heur=heur_x)
                     else:
-                        (m, x, y) = self.alphabeta(max=True, heur=heur)
+                        (m, x, y) = self.alphabeta(max=True, heur=heur_o)
                 end = time.time()
 
                 print("Maximum D1: " + str(self.currentD1) + " || Maximum D2: " + str(self.currentD2))
@@ -480,7 +481,7 @@ def main():
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
-    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur=Game.E1)
+    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E1)
 
 
 if __name__ == "__main__":
