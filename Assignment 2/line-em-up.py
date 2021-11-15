@@ -867,9 +867,18 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
+
+    def scoreboardAppender(algo=None, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0.0, r=1):
+        True
+
+
+
+    scoreboardAppender(algo=Game.MINIMAX, n=4, b=4, bboard=[[0,0], [0,4], [4,0], [4,4]], s=3, d1=6, d2=6, t=5)
+    scoreboardAppender(algo=Game.ALPHABETA, n=4, b=4, bboard=[[0,0], [0,4], [4,0], [4,4]], s=3, d1=6, d2=6, t=1)
+    scoreboardAppender(algo=Game.ALPHABETA, n=5, b=4, bboard=[], s=4, d1=2, d2=6, t=1)
+
     g = Game(n=5, b=1, s=4, d1=4, d2=8, t=9)
     g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E2, heur_o=Game.E2)
-
 
 if __name__ == "__main__":
     main()
