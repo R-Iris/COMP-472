@@ -262,7 +262,7 @@ class Game:
 
         return (value, x, y)
 
-    def alphabeta(self, alpha=-1000, beta=1000, max=False, heur=None):
+    def alphabeta(self, alpha=-10000, beta=10000, max=False, heur=None):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
@@ -274,9 +274,9 @@ class Game:
         alphaBetaEndT = time.time()
         self.currentT = round(alphaBetaEndT - self.alphaBetaStartT, 7)
 
-        value = 1000
+        value = 10000
         if max:
-            value = -1000
+            value = -10000
         x = None
         y = None
 
@@ -380,7 +380,10 @@ class Game:
             else:
                 break
         # If snakeCount adds up to s (can make a snake on this line)
-        score += snakeCount*8
+        if snakeCount >= self.s:
+            score += snakeCount*4
+        else:
+            score += snakeCount*2
         # -----------
         # Vertical
         # Down
@@ -402,8 +405,12 @@ class Game:
                 i += 1
             else:
                 break
-        score += snakeCount*8
+        if snakeCount >= self.s:
+            score += snakeCount*4
+        else:
+            score += snakeCount*2
         # -----------
+        # Favours Diagonals
         # TL
         # BR
         i = 0
@@ -424,7 +431,10 @@ class Game:
                 i += 1
             else:
                 break
-        score += snakeCount*8
+        if snakeCount >= self.s:
+            score += snakeCount*20
+        else:
+            score += snakeCount*8
         # -----------
         # TR
 
@@ -447,7 +457,10 @@ class Game:
                 i += 1
             else:
                 break
-        score += snakeCount*8
+        if snakeCount >= self.s:
+            score += snakeCount*20
+        else:
+            score += snakeCount*8
         # -----------
         return score
 
@@ -721,11 +734,11 @@ class Game:
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(n=4, b=0, s=4, d1=5000000, d2=5000000, t=20)
+    g = Game(n=6, b=0, s=6, d1=5000000, d2=5000000, t=20)
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
-    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E1, heur_o=Game.E1)
+    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E2, heur_o=Game.E2)
 
 
 if __name__ == "__main__":
