@@ -19,11 +19,14 @@ class Game:
     E1 = 4
     E2 = 5
 
-    currentD1 = 0
-    currentD2 = 0
+    currentStatesD1 = 0
+    currentStatesD2 = 0
     currentT = 0.0
     miniMaxStartT = 0.0
     alphaBetaStartT = 0.0
+
+    heuE1Counter = 0
+    heuE2Counter = 0
 
     def __init__(self, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0.0):
         self.n = n
@@ -51,6 +54,7 @@ class Game:
                     X = random.randint(0, self.n - 1)
                     Y = random.randint(0, self.n - 1)
                 self.current_state[X][Y] = '#'
+                self.bboard.append([X, Y])
         else:
             for element in self.bboard:
                 self.current_state[element[0]][element[1]] = '#'
@@ -62,7 +66,7 @@ class Game:
         print()
         self.file.write('\n\t')
         for z in range(0, self.n):
-            self.file.write(F' {z}')
+            self.file.write(F' {chr(z + 65)}')
         self.file.write('\n')
         for y in range(0, self.n):
             self.file.write(F' {y} | ')
@@ -176,7 +180,8 @@ class Game:
     def input_move(self):
         while True:
             print(F'Player {self.player_turn}, enter your move:')
-            px = int(input('enter the x coordinate: '))
+            px = input('enter the x coordinate: ')
+            px = ord(px) - 65
             py = int(input('enter the y coordinate: '))
             if self.is_valid(px, py):
                 return (px, py)
@@ -192,7 +197,7 @@ class Game:
         return self.player_turn
 
     # need to adapt to new ruleset
-    def minimax(self, max=False):
+    def minimax(self, max=False, depth=0):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
@@ -210,6 +215,8 @@ class Game:
         x = None
         y = None
 
+        depth += 1
+
         # Evaluation Function
         result = self.is_end()
         if result == 'X':
@@ -224,7 +231,8 @@ class Game:
         for i in range(0, self.n):  # change hardcoded 3 to self.n
             for j in range(0, self.n):  # change hardcoded 3 to self.n
 
-                if (self.currentD1 >= self.d1 != 0) or (self.currentD2 >= self.d2 != 0):
+                #if (self.currentStatesD1 >= self.d1 != 0) or (self.currentStatesD2 >= self.d2 != 0):
+                if depth >= self.d1 != 0 or depth >= self.d2 != 0:
                     # or self.is_end():
                     return (value, x, y)
 
@@ -239,7 +247,7 @@ class Game:
                     if max:
                         self.current_state[i][j] = 'O'
                         # d2 is the 2nd player because O starts second
-                        self.currentD2 += 1
+                        self.currentStatesD2 += 1
 
                         # print("D2 depth: " + str(self.currentD2))
                         (v, _, _) = self.minimax(max=False)
@@ -250,7 +258,7 @@ class Game:
                     else:
                         self.current_state[i][j] = 'X'
                         # d1 is the 1st player because X starts first
-                        self.currentD1 += 1
+                        self.currentStatesD1 += 1
 
                         # print("D1 depth: " + str(self.currentD1))
                         (v, _, _) = self.minimax(max=True)
@@ -259,7 +267,6 @@ class Game:
                             x = i
                             y = j
                     self.current_state[i][j] = '.'
-
         return (value, x, y)
 
     def alphabeta(self, alpha=-10000, beta=10000, max=False, heur=None):
@@ -294,7 +301,7 @@ class Game:
             # functionality for alpha-beta remains the same
             for j in range(0, self.n):
 
-                if (self.currentD1 >= self.d1 != 0) or (self.currentD2 >= self.d2 != 0):
+                if (self.currentStatesD1 >= self.d1 != 0) or (self.currentStatesD2 >= self.d2 != 0):
                     # or self.is_end():
                     return (value, x, y)
 
@@ -310,7 +317,7 @@ class Game:
                     # e2
                     if max:
                         self.current_state[i][j] = 'O'
-                        self.currentD2 += 1
+                        self.currentStatesD2 += 1
                         (v, k, l) = self.alphabeta(alpha, beta, max=False, heur=heur)
                         # this will set the value to v and the coordinate to the best possible child
                         # will then go back up the recursion ladder and compare with another possibility
@@ -325,7 +332,7 @@ class Game:
                             y = j
                     else:
                         self.current_state[i][j] = 'X'
-                        self.currentD1 += 1
+                        self.currentStatesD1 += 1
                         (v, k, l) = self.alphabeta(alpha, beta, max=True, heur=heur)
                         # this will set the value to v and the coordinate to the best possible child
                         # will then go back up the recursion ladder and compare with another possibility
@@ -353,6 +360,8 @@ class Game:
 
     # WHERE WE LEFT OFF, FOR SOME REASON IT READS X/Y AS NONE
     def e1(self, x, y):
+        self.heuE1Counter += 1
+
         score = 0
         symbol = self.current_state[x][y]
         # 4 cases: Horizontal, Vertical, TL, TR
@@ -363,8 +372,8 @@ class Game:
         # Right
         i = 0
         snakeCount = 0
-        while y+i < self.n:
-            ithSymbol = self.current_state[x][y+i]
+        while y + i < self.n:
+            ithSymbol = self.current_state[x][y + i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -372,8 +381,8 @@ class Game:
                 break
         # Left
         i = 0
-        while y-i >= 0:
-            ithSymbol = self.current_state[x][y-i]
+        while y - i >= 0:
+            ithSymbol = self.current_state[x][y - i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -381,16 +390,16 @@ class Game:
                 break
         # If snakeCount adds up to s (can make a snake on this line)
         if snakeCount >= self.s:
-            score += snakeCount*4
+            score += snakeCount * 4
         else:
-            score += snakeCount*2
+            score += snakeCount * 2
         # -----------
         # Vertical
         # Down
         i = 0
         snakeCount = 0
-        while x+i < self.n:
-            ithSymbol = self.current_state[x+i][y]
+        while x + i < self.n:
+            ithSymbol = self.current_state[x + i][y]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -398,25 +407,25 @@ class Game:
                 break
         # Up
         i = 0
-        while x-i >= 0:
-            ithSymbol = self.current_state[x-i][y]
+        while x - i >= 0:
+            ithSymbol = self.current_state[x - i][y]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
             else:
                 break
         if snakeCount >= self.s:
-            score += snakeCount*4
+            score += snakeCount * 4
         else:
-            score += snakeCount*2
+            score += snakeCount * 2
         # -----------
         # Favours Diagonals
         # TL
         # BR
         i = 0
         snakeCount = 0
-        while x+i < self.n and y+i < self.n:
-            ithSymbol = self.current_state[x+i][y+i]
+        while x + i < self.n and y + i < self.n:
+            ithSymbol = self.current_state[x + i][y + i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -424,25 +433,25 @@ class Game:
                 break
         # TL
         i = 0
-        while x-i >= 0 and y-i >= 0:
-            ithSymbol = self.current_state[x-i][y-i]
+        while x - i >= 0 and y - i >= 0:
+            ithSymbol = self.current_state[x - i][y - i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
             else:
                 break
         if snakeCount >= self.s:
-            score += snakeCount*20
+            score += snakeCount * 20
         else:
-            score += snakeCount*8
+            score += snakeCount * 8
         # -----------
         # TR
 
         # BL
         i = 0
         snakeCount = 0
-        while x-i >= 0 and y+i < self.n:
-            ithSymbol = self.current_state[x-i][y+i]
+        while x - i >= 0 and y + i < self.n:
+            ithSymbol = self.current_state[x - i][y + i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -450,34 +459,36 @@ class Game:
                 break
         # TR
         i = 0
-        while x+i < self.n and y-i >= 0:
-            ithSymbol = self.current_state[x+i][y-i]
+        while x + i < self.n and y - i >= 0:
+            ithSymbol = self.current_state[x + i][y - i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
             else:
                 break
         if snakeCount >= self.s:
-            score += snakeCount*20
+            score += snakeCount * 20
         else:
-            score += snakeCount*8
+            score += snakeCount * 8
         # -----------
         return score
 
     def e2(self, x, y):
+        self.heuE2Counter += 1
+
         score = 0
         symbol = self.current_state[x][y]
         # 4 cases: Horizontal, Vertical, TL, TR
         # For each case:- 2 directions
 
         # Horizontal
-        #-----------
+        # -----------
         # Precondition
         # Right
         i = 0
         snakeCount = 0
-        while y+i < self.n:
-            ithSymbol = self.current_state[x][y+i]
+        while y + i < self.n:
+            ithSymbol = self.current_state[x][y + i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -485,8 +496,8 @@ class Game:
                 break
         # Left
         i = 0
-        while y-i >= 0:
-            ithSymbol = self.current_state[x][y-i]
+        while y - i >= 0:
+            ithSymbol = self.current_state[x][y - i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -496,8 +507,8 @@ class Game:
         if snakeCount >= self.s:
             # Right Score Calculation
             i = 0
-            while y+i < self.n:
-                ithSymbol = self.current_state[x][y+i]
+            while y + i < self.n:
+                ithSymbol = self.current_state[x][y + i]
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
@@ -509,8 +520,8 @@ class Game:
                 i += 1
             # Left Score Calculation
             i = 0
-            while y-i >= 0:
-                ithSymbol = self.current_state[x][y-i]
+            while y - i >= 0:
+                ithSymbol = self.current_state[x][y - i]
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
@@ -520,14 +531,14 @@ class Game:
                 else:
                     break
                 i += 1
-        #-----------
+        # -----------
         # Vertical
         # Precondition
         # Down
         i = 0
         snakeCount = 0
-        while x+i < self.n:
-            ithSymbol = self.current_state[x+i][y]
+        while x + i < self.n:
+            ithSymbol = self.current_state[x + i][y]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -535,8 +546,8 @@ class Game:
                 break
         # Up
         i = 0
-        while x-i >= 0:
-            ithSymbol = self.current_state[x-i][y]
+        while x - i >= 0:
+            ithSymbol = self.current_state[x - i][y]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -546,8 +557,8 @@ class Game:
         if snakeCount >= self.s:
             # Down Score Calculation
             i = 0
-            while x+i < self.n:
-                ithSymbol = self.current_state[x+i][y]
+            while x + i < self.n:
+                ithSymbol = self.current_state[x + i][y]
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
@@ -559,8 +570,8 @@ class Game:
                 i += 1
             # Up Score Calculation
             i = 0
-            while x-i >= 0:
-                ithSymbol = self.current_state[x-i][y]
+            while x - i >= 0:
+                ithSymbol = self.current_state[x - i][y]
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
@@ -570,14 +581,14 @@ class Game:
                 else:
                     break
                 i += 1
-        #-----------
-        #TL
+        # -----------
+        # TL
         # Precondition
         # BR
         i = 0
         snakeCount = 0
-        while x+i < self.n and y+i < self.n:
-            ithSymbol = self.current_state[x+i][y+i]
+        while x + i < self.n and y + i < self.n:
+            ithSymbol = self.current_state[x + i][y + i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -585,8 +596,8 @@ class Game:
                 break
         # TL
         i = 0
-        while x-i >= 0 and y-i >= 0:
-            ithSymbol = self.current_state[x-i][y-i]
+        while x - i >= 0 and y - i >= 0:
+            ithSymbol = self.current_state[x - i][y - i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -596,8 +607,8 @@ class Game:
         if snakeCount >= self.s:
             # BR Score Calculation
             i = 0
-            while x+i < self.n and y+i < self.n:
-                ithSymbol = self.current_state[x+i][y+i]
+            while x + i < self.n and y + i < self.n:
+                ithSymbol = self.current_state[x + i][y + i]
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
@@ -609,8 +620,8 @@ class Game:
                 i += 1
             # TL Score Calculation
             i = 0
-            while x-i >= 0 and y-i >= 0:
-                ithSymbol = self.current_state[x-i][y-i]
+            while x - i >= 0 and y - i >= 0:
+                ithSymbol = self.current_state[x - i][y - i]
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
@@ -620,14 +631,14 @@ class Game:
                 else:
                     break
                 i += 1
-        #-----------
-        #TR
+        # -----------
+        # TR
         # Precondition
-        #BL
+        # BL
         i = 0
         snakeCount = 0
-        while x-i >= 0 and y+i < self.n:
-            ithSymbol = self.current_state[x-i][y+i]
+        while x - i >= 0 and y + i < self.n:
+            ithSymbol = self.current_state[x - i][y + i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -635,8 +646,8 @@ class Game:
                 break
         # TR
         i = 0
-        while x+i < self.n and y-i >= 0:
-            ithSymbol = self.current_state[x+i][y-i]
+        while x + i < self.n and y - i >= 0:
+            ithSymbol = self.current_state[x + i][y - i]
             if ithSymbol == symbol or ithSymbol == '.':
                 snakeCount += 1
                 i += 1
@@ -646,8 +657,8 @@ class Game:
         if snakeCount >= self.s:
             # BL Score Calculation
             i = 0
-            while x-i >= 0 and y+i < self.n:
-                ithSymbol = self.current_state[x-i][y+i]
+            while x - i >= 0 and y + i < self.n:
+                ithSymbol = self.current_state[x - i][y + i]
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
@@ -659,8 +670,8 @@ class Game:
                 i += 1
             # TR Score Calculation
             i = 0
-            while x+i < self.n and y-i >= 0:
-                ithSymbol = self.current_state[x+i][y-i]
+            while x + i < self.n and y - i >= 0:
+                ithSymbol = self.current_state[x + i][y - i]
                 if ithSymbol == '#':
                     break
                 elif ithSymbol == '.':
@@ -670,14 +681,23 @@ class Game:
                 else:
                     break
                 i += 1
-        #-----------
+        # -----------
         return score
+
     def play(self, algo=None, player_x=None, player_o=None, heur_x=None, heur_o=None):
-        self.file.write(
-            F'Player 1: {"HUMAN" if player_x == self.HUMAN else "AI"} d={self.d1} a={"True" if algo is not None else "False"} '
-            F'e1('F'regular)\n'
-            F'Player 2: {"HUMAN" if player_o == self.HUMAN else "AI"} d={self.d2} a={"True" if algo is not None else "False"} '
-            F'e2('F'defensive)\n\n')
+        if player_x == self.HUMAN:
+            self.file.write(F'Player 1: HUMAN\n')
+        else:
+            self.file.write(F'Player 1: AI d={self.d1} a={"True" if algo is not None else "False"} '
+                            F'{"Type=ALPHABETA" if algo == self.ALPHABETA else "Type=MINIMAX"}'
+                            F'{" e1(regular)" if heur_x == self.E1 else "e2(defensive)"}\n')
+        if player_o == self.HUMAN:
+            self.file.write(F'Player 2: HUMAN')
+        else:
+            self.file.write(F'Player 2: AI d={self.d2} a={"True" if algo is not None else "False"} '
+                            F'{"Type=ALPHABETA" if algo == self.ALPHABETA else "Type=MINIMAX"}'
+                            F'{" e1(regular)" if heur_x == self.E1 else "e2(defensive)"}\n')
+
         if algo == None:
             algo = self.ALPHABETA
         if heur_x == None:
@@ -696,24 +716,25 @@ class Game:
                 return
 
             # Resetting the d1, d2 and time
-            self.currentD1 = 0
-            self.currentD2 = 0
+            self.currentStatesD1 = 0
+            self.currentStatesD2 = 0
             self.currentT = 0.0
             self.miniMaxStartT = 0.0
             self.alphaBetaStartT = 0.0
+            depth = -1
 
             if (self.player_turn == 'X' and player_x == self.HUMAN) or (
                     self.player_turn == 'O' and player_o == self.HUMAN):
                 (x, y) = self.input_move()
-                self.file.write(F'Player {self.player_turn} under HUMAN control plays: x = {x}, y = {y}\n')
+                self.file.write(F'Player {self.player_turn} under HUMAN control plays: {chr(x + 65)} {y}\n')
             if (self.player_turn == 'X' and player_x == self.AI) or (self.player_turn == 'O' and player_o == self.AI):
                 start = time.time()
                 if algo == self.MINIMAX:
                     self.miniMaxStartT = time.time()
                     if self.player_turn == 'X':
-                        (_, x, y) = self.minimax(max=False)
+                        (_, x, y) = self.minimax(max=False, depth=depth)
                     else:
-                        (_, x, y) = self.minimax(max=True)
+                        (_, x, y) = self.minimax(max=True, depth=depth)
                 else:  # algo == self.ALPHABETA:
                     self.alphaBetaStartT = time.time()
                     if self.player_turn == 'X':
@@ -722,23 +743,26 @@ class Game:
                         (m, x, y) = self.alphabeta(max=True, heur=heur_o)
                 end = time.time()
 
-                print("Maximum D1: " + str(self.currentD1) + " || Maximum D2: " + str(self.currentD2))
+                print("Current depth: " + str(depth))
+                print("Maximum D1: " + str(self.currentStatesD1) + " || Maximum D2: " + str(self.currentStatesD2))
                 print(F'Evaluation time: {round(end - start, 7)}s')
                 print(F'Player {self.player_turn} under AI control plays: x = {x}, y = {y}')
-                self.file.write(F'\nPlayer {self.player_turn} under AI control plays: x = {x}, y = {y}\n\n')
+                self.file.write(F'\nPlayer {self.player_turn} under AI control plays:  {chr(x + 65)} {y}\n\n')
                 self.file.write(
-                    F'i Evaluation time: {round(end - start, 7)}s\n\n')  # THIS SHOULD BE THE TIME FOR THE HEURISTIC
+                    F'i Evaluation time: {round(end - start, 7)}s\n'
+                    F'ii Heuristic evaluations: {self.heuE1Counter if self.E1 is not None else self.heuE2Counter}\n'
+                    F'iii Evaluations by depth: \n\n')
             self.current_state[x][y] = self.player_turn
             self.switch_player()
 
 
 def main():
     # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-    g = Game(n=6, b=0, s=6, d1=5000000, d2=5000000, t=20)
+    g = Game(n=3, b=0, s=3, d1=4, d2=8, t=9)
     # g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     # g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
     # g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI)
-    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E2, heur_o=Game.E2)
+    g.play(algo=Game.MINIMAX, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E1, heur_o=Game.E2)
 
 
 if __name__ == "__main__":
