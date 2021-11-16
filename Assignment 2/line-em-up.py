@@ -180,10 +180,6 @@ class Game:
                 self.file.write("\nIt's a tie!\n")
 
             self.file.write(F'6(b)i\tAverage evaluation time: {round(np.array(self.listOfTimes).mean(),3)}s\n')
-
-            print(self.dictTOTALbyDepth)
-            print(self.dictDepthD1)
-            print(self.dictDepthD2)
             self.file.write(F'(b)ii\tTotal heuristic evaluations: {self.heuTOTAL}\n')
             self.file.write(F'6(b)iii\tEvaluations by depth: {self.dictTOTALbyDepth}\n')
             self.file.write(F'6(b)iv\tAverage evaluation depth: {round(self.AVGStates/self.numberOfMoves, 3)}\n')
@@ -918,9 +914,9 @@ def main():
 
         # All the information displayed at the end of a game (see Section 2.5.1), but averaged over 2×s games
         #i   Average evaluation time: 4.66s
-        file.write(F'Average evaluation time: {avgEvalTime}s\n')
+        file.write(F'Average evaluation time: {round(avgEvalTime,3)}s\n')
         #ii  Total heuristic evaluations: 2100904
-        file.write(F'Total heuristic evaluations: {totalHeurEval}')
+        file.write(F'Total heuristic evaluations: {totalHeurEval}\n')
         #iii Evaluations by depth: {6: 1212870, 5: 884185, 4: 3373, 3: 410, 2: 60, 1: 6}
         file.write(F'Evaluations by depth: ????\n')
         #iv  Average evaluation depth: 5.6
@@ -928,7 +924,7 @@ def main():
         #v   Average recursion depth: 2.9
         file.write(F'Average recursion depth: {avgRecDepth}\n')
         #vi  Average moves per game: 9.75
-        file.write(F'Average moves per game: {avgMovesPerGame}\n')
+        file.write(F'Average moves per game: {avgMovesPerGame}\n\n')
 
     scoreboardAppender(algo=Game.MINIMAX, n=4, b=4, bboard=[[0,0], [0,3], [3,0], [3,3]], s=3, d1=6, d2=6, t=5, r=5)
     scoreboardAppender(algo=Game.ALPHABETA, n=4, b=4, bboard=[[0,0], [0,3], [3,0], [3,3]], s=3, d1=6, d2=6, t=1, r=5)
