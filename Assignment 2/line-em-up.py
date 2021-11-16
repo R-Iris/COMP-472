@@ -2,7 +2,6 @@
 import time
 import random
 import numpy as np
-import collections
 
 class Game:
     MINIMAX = 0
@@ -11,27 +10,6 @@ class Game:
     AI = 3
     E1 = 4
     E2 = 5
-
-    winner = 'None'
-
-    currentStatesD1 = 0
-    currentStatesD2 = 0
-    currentT = 0.0
-    miniMaxStartT = 0.0
-    alphaBetaStartT = 0.0
-
-    heuE1Counter = 0
-    heuE2Counter = 0
-    heuTOTAL = 0
-    AVGStates = 0.0
-
-    dictDepthD1 = {}
-    dictDepthD2 = {}
-    dictTOTALbyDepth = {}
-
-    numberOfMoves = 0
-
-    listOfTimes = []
 
     def __init__(self, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0.0):
         self.n = n
@@ -42,6 +20,28 @@ class Game:
         self.d2 = d2  # Max value of d2
         self.t = t  # Max value of t
         self.initialize_game()
+
+        self.winner = 'None'
+
+        self.currentStatesD1 = 0
+        self.currentStatesD2 = 0
+        self.currentT = 0.0
+        self.miniMaxStartT = 0.0
+        self.alphaBetaStartT = 0.0
+
+        self.heuE1Counter = 0
+        self.heuE2Counter = 0
+        self.heuTOTAL = 0
+        self.AVGStates = 0.0
+
+        self.dictDepthD1 = {}
+        self.dictDepthD2 = {}
+        self.dictTOTALbyDepth = {}
+
+        self.numberOfMoves = 0
+
+        self.listOfTimes = []
+
         self.file = open(F'gameTrace-{self.n}{self.b}{self.s}{self.t}.txt', 'w')
 
         # Writing the first line to the file
@@ -185,9 +185,10 @@ class Game:
                 self.file.write("\nIt's a tie!\n")
 
             self.file.write(F'6(b)i\tAverage evaluation time: {round(np.array(self.listOfTimes).mean(),3)}s\n')
-            self.file.write(F'(b)ii\tTotal heuristic evaluations: {self.heuTOTAL}\n')
+            self.file.write(F'6(b)ii\tTotal heuristic evaluations: {self.heuTOTAL}\n')
             self.file.write(F'6(b)iii\tEvaluations by depth: {self.dictTOTALbyDepth}\n')
             self.file.write(F'6(b)iv\tAverage evaluation depth: {round(self.AVGStates/self.numberOfMoves, 3)}\n')
+            self.file.write(F'6(b)v\tAverage recursion depth: {round((self.AVGStates/self.numberOfMoves)/2,3)}\n')
             self.file.write(F'6(b)vi\tTotal number of moves: {self.numberOfMoves}\n')
 
             self.initialize_game()
@@ -247,10 +248,7 @@ class Game:
             for j in range(0, self.n):  # change hardcoded 3 to self.n
 
                 if depth == 0:
-                    # or self.is_end():
                     return (value, x, y)
-
-                #if (self.currentStatesD1 >= self.d1 != 0) or (self.currentStatesD2 >= self.d2 != 0):
 
                 if self.currentT >= self.t != 0:
                     print(F'\nPlayer {self.player_turn} under AI control has taken too long to decide.'
@@ -268,7 +266,6 @@ class Game:
                         # d2 is the 2nd player because O starts second
                         self.currentStatesD2 += 1
 
-                        # print("D2 depth: " + str(self.currentD2))
                         (v, _, _) = self.minimax(max=False, depth=depth-1)
                         if v > value:
                             value = v
@@ -282,7 +279,6 @@ class Game:
                         # d1 is the 1st player because X starts first
                         self.currentStatesD1 += 1
 
-                        # print("D1 depth: " + str(self.currentD1))
                         (v, _, _) = self.minimax(max=True, depth=depth-1)
                         if v < value:
                             value = v
@@ -353,7 +349,6 @@ class Game:
                         # this will set the value to v and the coordinate to the best possible child
                         # will then go back up the recursion ladder and compare with another possibility
                         if v > value and k is not None and l is not None:
-                            # print(" i: " + str(i) + " j: " + str(j) +  " value: " + str(value) + " k: " + str(k) + " l: " + str(l) + " v: " + str(v))
                             value = v
                             x = k
                             y = l
@@ -368,7 +363,6 @@ class Game:
                         # this will set the value to v and the coordinate to the best possible child
                         # will then go back up the recursion ladder and compare with another possibility
                         if v < value and k is not None and l is not None:
-                            # print(" i: " + str(i) + " j: " + str(j) +  " value: " + str(value) + " k: " + str(k) + " l: " + str(l) + " v: " + str(v))
                             value = v
                             x = k
                             y = l
@@ -391,7 +385,7 @@ class Game:
 
     def e1(self, x, y):
         self.heuE1Counter += 1
-        self.heuTOTAL +=1
+        self.heuTOTAL += 1
 
         score = 0
         symbol = self.current_state[x][y]
@@ -824,7 +818,6 @@ class Game:
                         (m, x, y) = self.alphabeta(max=True, heur=heur_o, depth=self.d2)
                 end = time.time()
 
-                #print("Current depth: " + str(self.depth))
                 print("States checked for P1: " + str(self.currentStatesD1) + " || States checked for P2: " + str(self.currentStatesD2))
                 self.listOfTimes.append(round(end - start, 7))
                 print(F'Evaluation time: {round(end - start, 7)}s')
@@ -866,15 +859,10 @@ def main():
         winsE2 = 0
         avgEvalTime = 0
         totalHeurEval = 0
-        #evalByDepth = 0
+        evalByDepth = {}
         avgEvalDepth = 0
         avgRecDepth = 0
         avgMovesPerGame = 0
-
-        # print(self.dictTOTALbyDepth)
-        # print(self.dictDepthD1)
-        # print(self.dictDepthD2)
-        # self.file.write(F'6(b)iii\tEvaluations by depth: {self.dictTOTALbyDepth}\n')
 
         # Create game using args
         g = Game(n=n, b=b, bboard=bboard, s=s, d1=d1, d2=d2, t=t)
@@ -887,6 +875,7 @@ def main():
                 winsE2 += 1
             avgEvalTime += round(np.array(g.listOfTimes).mean(),3)
             totalHeurEval += g.heuTOTAL
+            evalByDepth.update(g.dictTOTALbyDepth)
             avgEvalDepth += round(g.AVGStates/g.numberOfMoves, 3)
             avgRecDepth += 0
             avgMovesPerGame += g.numberOfMoves
@@ -899,22 +888,27 @@ def main():
                 winsE1 += 1
             avgEvalTime += round(np.array(g.listOfTimes).mean(),3)
             totalHeurEval += g.heuTOTAL
+            evalByDepth.update(g.dictTOTALbyDepth)
             avgEvalDepth += round(g.AVGStates/g.numberOfMoves, 3)
             avgRecDepth += 0
             avgMovesPerGame += g.numberOfMoves
 
         avgEvalTime = avgEvalTime / (2*r)
+        totalHeurEval = totalHeurEval / (2*r)
         avgEvalDepth = avgEvalDepth / (2*r)
-        avgRecDepth = avgRecDepth / (2*r)
         avgMovesPerGame = avgMovesPerGame / (2*r)
+
+        for key, value in evalByDepth.items():
+            evalByDepth[key] = value/(2*r)
+
 
         # Game Parameters
         file = open('scoreboard.txt', 'a')
         file.write(F'n={g.n} b={g.b} s={g.s} t={g.t}\n')
 
         # Player Parameters
-        file.write(F'Player 1: d={g.d1} a={algo}\n')
-        file.write(F'Player 2: d={g.d2} a={algo}\n')
+        file.write(F'Player 1: d={g.d1} a={"True" if algo else "False"}\n')
+        file.write(F'Player 2: d={g.d2} a={"True" if algo else "False"}\n')
 
         # Number of Games Played
         file.write(F'{2*r} games\n')
@@ -922,24 +916,16 @@ def main():
         # The number and percentage of wins for heuristic e1 and for heuristic e2
         file.write(F'Total wins for heuristic e1: {winsE1} ({winsE1/(2*r) *100}%) (Simple)\n')
         file.write(F'Total wins for heuristic e2: {winsE2} ({winsE2/(2*r) *100}%) (Complex)\n')
-        #Total wins for heuristic e1: 3 (75.0%) (regular)
-        #Total wins for heuristic e2: 1 (25.0%) (defensive)
 
         # All the information displayed at the end of a game (see Section 2.5.1), but averaged over 2×s games
-        #i   Average evaluation time: 4.66s
-        file.write(F'Average evaluation time: {round(avgEvalTime,3)}s\n')
-        #ii  Total heuristic evaluations: 2100904
-        file.write(F'Total heuristic evaluations: {totalHeurEval}\n')
-        #iii Evaluations by depth: {6: 1212870, 5: 884185, 4: 3373, 3: 410, 2: 60, 1: 6}
-        file.write(F'Evaluations by depth: ????\n')
-        #iv  Average evaluation depth: 5.6
-        file.write(F'Average evaluation depth: {avgEvalDepth}\n')
-        #v   Average recursion depth: 2.9
-        file.write(F'Average recursion depth: {avgRecDepth}\n')
-        #vi  Average moves per game: 9.75
-        file.write(F'Average moves per game: {avgMovesPerGame}\n\n')
+        file.write(F'i\tAverage evaluation time: {round(avgEvalTime,3)}s\n')
+        file.write(F'ii\tTotal heuristic evaluations: {totalHeurEval}\n')
+        file.write(F'iii\tEvaluations by depth: {evalByDepth}\n')
+        file.write(F'iv\tAverage evaluation depth: {round(avgEvalDepth,3)}\n')
+        file.write(F'v\tAverage recursion depth: {round(avgEvalDepth/2,3)}\n')
+        file.write(F'vi\tAverage moves per game: {avgMovesPerGame}\n\n')
 
-    scoreboardAppender(algo=Game.MINIMAX, n=4, b=4, bboard=[[0,0], [0,3], [3,0], [3,3]], s=3, d1=6, d2=6, t=5, r=5)
+    #scoreboardAppender(algo=Game.MINIMAX, n=4, b=4, bboard=[[0,0], [0,3], [3,0], [3,3]], s=3, d1=6, d2=6, t=5, r=5)
     #scoreboardAppender(algo=Game.ALPHABETA, n=4, b=4, bboard=[[0,0], [0,3], [3,0], [3,3]], s=3, d1=6, d2=6, t=1, r=5)
     #scoreboardAppender(algo=Game.ALPHABETA, n=5, b=4, bboard=[], s=4, d1=2, d2=6, t=1, r=5)
     #scoreboardAppender(algo=Game.ALPHABETA, n=5, b=4, bboard=[], s=4, d1=6, d2=6, t=5, r=5)
@@ -948,8 +934,6 @@ def main():
     #scoreboardAppender(algo=Game.ALPHABETA, n=8, b=6, bboard=[], s=5, d1=6, d2=6, t=1, r=5)
     scoreboardAppender(algo=Game.ALPHABETA, n=8, b=6, bboard=[], s=5, d1=6, d2=6, t=5, r=5)
 
-    #g = Game(n=5, b=1, s=4, d1=4, d2=8, t=9)
-    #g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E2, heur_o=Game.E2)
 
 if __name__ == "__main__":
     main()
