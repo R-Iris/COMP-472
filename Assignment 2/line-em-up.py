@@ -12,6 +12,8 @@ class Game:
     E1 = 4
     E2 = 5
 
+    winner = 'None'
+
     currentStatesD1 = 0
     currentStatesD2 = 0
     currentT = 0.0
@@ -168,14 +170,17 @@ class Game:
         # Printing the appropriate message if the game has ended
         if self.result != None:
             if self.result == 'X':
+                self.winner = 'X'
                 print('The winner is X!')
                 self.file.write('\nThe winner is X!\n')
 
             elif self.result == 'O':
+                self.winner = 'O'
                 print('The winner is O!')
                 self.file.write('\nThe winner is O!\n')
 
             elif self.result == '.':
+                self.winner = 'tie'
                 print("It's a tie!")
                 self.file.write("\nIt's a tie!\n")
 
@@ -876,6 +881,10 @@ def main():
         # Play 1xr games with X E1 O E2
         for i in range(r):
             g.play(algo=algo, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E1, heur_o=Game.E2)
+            if g.winner == 'X':
+                winsE1 += 1
+            elif g.winner == 'O':
+                winsE2 += 1
             avgEvalTime += round(np.array(g.listOfTimes).mean(),3)
             totalHeurEval += g.heuTOTAL
             avgEvalDepth += round(g.AVGStates/g.numberOfMoves, 3)
@@ -884,6 +893,10 @@ def main():
         # Play 1xr games with O E1 X E2
         for i in range(r):
             g.play(algo=algo, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E2, heur_o=Game.E1)
+            if g.winner == 'X':
+                winsE2 += 1
+            elif g.winner == 'O':
+                winsE1 += 1
             avgEvalTime += round(np.array(g.listOfTimes).mean(),3)
             totalHeurEval += g.heuTOTAL
             avgEvalDepth += round(g.AVGStates/g.numberOfMoves, 3)
@@ -907,8 +920,8 @@ def main():
         file.write(F'{2*r} games\n')
 
         # The number and percentage of wins for heuristic e1 and for heuristic e2
-        file.write(F'Total wins for heuristic e1: {winsE1} ({winsE1/(2*r)}%) (Simple)\n')
-        file.write(F'Total wins for heuristic e2: {winsE2} ({winsE2/(2*r)}%) (Complex)\n')
+        file.write(F'Total wins for heuristic e1: {winsE1} ({winsE1/(2*r) *100}%) (Simple)\n')
+        file.write(F'Total wins for heuristic e2: {winsE2} ({winsE2/(2*r) *100}%) (Complex)\n')
         #Total wins for heuristic e1: 3 (75.0%) (regular)
         #Total wins for heuristic e2: 1 (25.0%) (defensive)
 
@@ -927,12 +940,12 @@ def main():
         file.write(F'Average moves per game: {avgMovesPerGame}\n\n')
 
     scoreboardAppender(algo=Game.MINIMAX, n=4, b=4, bboard=[[0,0], [0,3], [3,0], [3,3]], s=3, d1=6, d2=6, t=5, r=5)
-    scoreboardAppender(algo=Game.ALPHABETA, n=4, b=4, bboard=[[0,0], [0,3], [3,0], [3,3]], s=3, d1=6, d2=6, t=1, r=5)
-    scoreboardAppender(algo=Game.ALPHABETA, n=5, b=4, bboard=[], s=4, d1=2, d2=6, t=1, r=5)
-    scoreboardAppender(algo=Game.ALPHABETA, n=5, b=4, bboard=[], s=4, d1=6, d2=6, t=5, r=5)
-    scoreboardAppender(algo=Game.ALPHABETA, n=8, b=5, bboard=[], s=5, d1=2, d2=6, t=1, r=5)
-    scoreboardAppender(algo=Game.ALPHABETA, n=8, b=5, bboard=[], s=5, d1=2, d2=6, t=5, r=5)
-    scoreboardAppender(algo=Game.ALPHABETA, n=8, b=6, bboard=[], s=5, d1=6, d2=6, t=1, r=5)
+    #scoreboardAppender(algo=Game.ALPHABETA, n=4, b=4, bboard=[[0,0], [0,3], [3,0], [3,3]], s=3, d1=6, d2=6, t=1, r=5)
+    #scoreboardAppender(algo=Game.ALPHABETA, n=5, b=4, bboard=[], s=4, d1=2, d2=6, t=1, r=5)
+    #scoreboardAppender(algo=Game.ALPHABETA, n=5, b=4, bboard=[], s=4, d1=6, d2=6, t=5, r=5)
+    #scoreboardAppender(algo=Game.ALPHABETA, n=8, b=5, bboard=[], s=5, d1=2, d2=6, t=1, r=5)
+    #scoreboardAppender(algo=Game.ALPHABETA, n=8, b=5, bboard=[], s=5, d1=2, d2=6, t=5, r=5)
+    #scoreboardAppender(algo=Game.ALPHABETA, n=8, b=6, bboard=[], s=5, d1=6, d2=6, t=1, r=5)
     scoreboardAppender(algo=Game.ALPHABETA, n=8, b=6, bboard=[], s=5, d1=6, d2=6, t=5, r=5)
 
     #g = Game(n=5, b=1, s=4, d1=4, d2=8, t=9)
