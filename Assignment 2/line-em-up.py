@@ -4,13 +4,6 @@ import random
 import numpy as np
 import collections
 
-# n: initgame, isend, minimax, alphabeta
-
-# blocs:
-# b: blocs are #'s, b number is used if bboard isnt defined; used in initgame, checkend(X)
-# bboard : randomized coordinates if not defined, based on b number; used in initgame, checkend(X)
-# bboard : if number of b and coordinates are specified in params, then ignore the number of b
-
 class Game:
     MINIMAX = 0
     ALPHABETA = 1
@@ -866,31 +859,88 @@ class Game:
 
 
 def main():
-    # bboard=[[0, 0], [1, 1], [2, 2], [3, 3]]
-
     def scoreboardAppender(algo=None, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0.0, r=1):
 
+        winsE1 = 0
+        winsE2 = 0
+        avgEvalTime = 0
+        totalHeurEval = 0
+        #evalByDepth = 0
+        avgEvalDepth = 0
+        avgRecDepth = 0
+        avgMovesPerGame = 0
+
+        # print(self.dictTOTALbyDepth)
+        # print(self.dictDepthD1)
+        # print(self.dictDepthD2)
+        # self.file.write(F'6(b)iii\tEvaluations by depth: {self.dictTOTALbyDepth}\n')
 
         # Create game using args
         g = Game(n=n, b=b, bboard=bboard, s=s, d1=d1, d2=d2, t=t)
         # Play 1xr games with X E1 O E2
         for i in range(r):
             g.play(algo=algo, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E1, heur_o=Game.E2)
+            avgEvalTime += round(np.array(g.listOfTimes).mean(),3)
+            totalHeurEval += g.heuTOTAL
+            avgEvalDepth += round(g.AVGStates/g.numberOfMoves, 3)
+            avgRecDepth += 0
+            avgMovesPerGame += g.numberOfMoves
         # Play 1xr games with O E1 X E2
         for i in range(r):
             g.play(algo=algo, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E2, heur_o=Game.E1)
+            avgEvalTime += round(np.array(g.listOfTimes).mean(),3)
+            totalHeurEval += g.heuTOTAL
+            avgEvalDepth += round(g.AVGStates/g.numberOfMoves, 3)
+            avgRecDepth += 0
+            avgMovesPerGame += g.numberOfMoves
 
-    scoreboardAppender(algo=Game.MINIMAX, n=4, b=4, bboard=[[0,0], [0,4], [4,0], [4,4]], s=3, d1=6, d2=6, t=5)
-    scoreboardAppender(algo=Game.ALPHABETA, n=4, b=4, bboard=[[0,0], [0,4], [4,0], [4,4]], s=3, d1=6, d2=6, t=1)
-    scoreboardAppender(algo=Game.ALPHABETA, n=5, b=4, bboard=[], s=4, d1=2, d2=6, t=1)
-    scoreboardAppender(algo=Game.ALPHABETA, n=5, b=4, bboard=[], s=4, d1=6, d2=6, t=5)
-    scoreboardAppender(algo=Game.ALPHABETA, n=8, b=5, bboard=[], s=5, d1=2, d2=6, t=1)
-    scoreboardAppender(algo=Game.ALPHABETA, n=8, b=5, bboard=[], s=5, d1=2, d2=6, t=5)
-    scoreboardAppender(algo=Game.ALPHABETA, n=8, b=6, bboard=[], s=5, d1=6, d2=6, t=1)
-    scoreboardAppender(algo=Game.ALPHABETA, n=8, b=6, bboard=[], s=5, d1=6, d2=6, t=5)
+        avgEvalTime = avgEvalTime / (2*r)
+        avgEvalDepth = avgEvalDepth / (2*r)
+        avgRecDepth = avgRecDepth / (2*r)
+        avgMovesPerGame = avgMovesPerGame / (2*r)
 
-    g = Game(n=5, b=1, s=4, d1=4, d2=8, t=9)
-    g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E2, heur_o=Game.E2)
+        # Game Parameters
+        file = open('scoreboard.txt', 'a')
+        file.write(F'n={g.n} b={g.b} s={g.s} t={g.t}\n')
+
+        # Player Parameters
+        file.write(F'Player 1: d={g.d1} a={algo}\n')
+        file.write(F'Player 2: d={g.d2} a={algo}\n')
+
+        # Number of Games Played
+        file.write(F'{2*r} games\n')
+
+        # The number and percentage of wins for heuristic e1 and for heuristic e2
+        file.write(F'Total wins for heuristic e1: {winsE1} ({winsE1/(2*r)}%) (Simple)\n')
+        file.write(F'Total wins for heuristic e2: {winsE2} ({winsE2/(2*r)}%) (Complex)\n')
+        #Total wins for heuristic e1: 3 (75.0%) (regular)
+        #Total wins for heuristic e2: 1 (25.0%) (defensive)
+
+        # All the information displayed at the end of a game (see Section 2.5.1), but averaged over 2×s games
+        #i   Average evaluation time: 4.66s
+        file.write(F'Average evaluation time: {avgEvalTime}s\n')
+        #ii  Total heuristic evaluations: 2100904
+        file.write(F'Total heuristic evaluations: {totalHeurEval}')
+        #iii Evaluations by depth: {6: 1212870, 5: 884185, 4: 3373, 3: 410, 2: 60, 1: 6}
+        file.write(F'Evaluations by depth: ????\n')
+        #iv  Average evaluation depth: 5.6
+        file.write(F'Average evaluation depth: {avgEvalDepth}\n')
+        #v   Average recursion depth: 2.9
+        file.write(F'Average recursion depth: {avgRecDepth}\n')
+        #vi  Average moves per game: 9.75
+        file.write(F'Average moves per game: {avgMovesPerGame}\n')
+
+    scoreboardAppender(algo=Game.MINIMAX, n=4, b=4, bboard=[[0,0], [0,3], [3,0], [3,3]], s=3, d1=6, d2=6, t=5, r=5)
+    scoreboardAppender(algo=Game.ALPHABETA, n=4, b=4, bboard=[[0,0], [0,3], [3,0], [3,3]], s=3, d1=6, d2=6, t=1, r=5)
+    scoreboardAppender(algo=Game.ALPHABETA, n=5, b=4, bboard=[], s=4, d1=2, d2=6, t=1, r=5)
+    scoreboardAppender(algo=Game.ALPHABETA, n=5, b=4, bboard=[], s=4, d1=6, d2=6, t=5, r=5)
+    scoreboardAppender(algo=Game.ALPHABETA, n=8, b=5, bboard=[], s=5, d1=2, d2=6, t=1, r=5)
+    scoreboardAppender(algo=Game.ALPHABETA, n=8, b=5, bboard=[], s=5, d1=2, d2=6, t=5, r=5)
+    scoreboardAppender(algo=Game.ALPHABETA, n=8, b=6, bboard=[], s=5, d1=6, d2=6, t=1, r=5)
+    scoreboardAppender(algo=Game.ALPHABETA, n=8, b=6, bboard=[], s=5, d1=6, d2=6, t=5, r=5)
+
+    #g = Game(n=5, b=1, s=4, d1=4, d2=8, t=9)
+    #g.play(algo=Game.ALPHABETA, player_x=Game.AI, player_o=Game.AI, heur_x=Game.E2, heur_o=Game.E2)
 
 if __name__ == "__main__":
     main()
