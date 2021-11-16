@@ -5,9 +5,7 @@
 <li>Karim Ramy Boshra Botros 40179768</li>
 <li>Iris Maria Radu 40179149</li>
 </ul>
-<h4>github with code:</h4>
-<href>https://github.com/R-Iris/COMP-472<href>
-	
+<h4>github with code:</h4><href>https://github.com/R-Iris/COMP-472<href>
 <ol>
 <li>Open the folder named: 'Assignment 2'</li>
 <li>Open line-em-up.py and run the code.</li>
