@@ -1,17 +1,164 @@
 n=8 b=6 s=5 t=1
-blocs=[[5, 7], [4, 1], [2, 7], [2, 2], [0, 4], [1, 1]]
+blocs=[[2, 3], [1, 5], [0, 4], [0, 3], [3, 2], [6, 0]]
 
 Player 1: AI d=6 a=True Type=ALPHABETA e1(regular)
 Player 2: AI d=6 a=True Type=ALPHABETA e1(regular)
 
 	 A B C D E F G H
- 0 | . . . . . . . . 
- 1 | . # . . # . . . 
- 2 | . . # . . . . . 
- 3 | . . . . . . . . 
+ 0 | . . . . . . # . 
+ 1 | . . . . . . . . 
+ 2 | . . . # . . . . 
+ 3 | # . # . . . . . 
  4 | # . . . . . . . 
- 5 | . . . . . . . . 
+ 5 | . # . . . . . . 
  6 | . . . . . . . . 
- 7 | . . # . . # . . 
+ 7 | . . . . . . . . 
 
 
+
+Player O under AI control has taken too long to decide.
+Player X has won!Player 1: AI d=6 a=True Type=ALPHABETA e1(regular)
+Player 2: AI d=6 a=True Type=ALPHABETA e1(regular)
+
+	 A B C D E F G H
+ 0 | . . . . . . # . 
+ 1 | . . . . . . . . 
+ 2 | . . . # . . . . 
+ 3 | # . # . . . . . 
+ 4 | # . . . . . . . 
+ 5 | . # . . . . . . 
+ 6 | . . . . . . . . 
+ 7 | . . . . . . . . 
+
+
+
+Player O under AI control has taken too long to decide.
+Player X has won!Player 1: AI d=6 a=True Type=ALPHABETA e1(regular)
+Player 2: AI d=6 a=True Type=ALPHABETA e1(regular)
+
+	 A B C D E F G H
+ 0 | . . . . . . # . 
+ 1 | . . . . . . . . 
+ 2 | . . . # . . . . 
+ 3 | # . # . . . . . 
+ 4 | # . . . . . . . 
+ 5 | . # . . . . . . 
+ 6 | . . . . . . . . 
+ 7 | . . . . . . . . 
+
+
+
+Player O under AI control has taken too long to decide.
+Player X has won!Player 1: AI d=6 a=True Type=ALPHABETA e1(regular)
+Player 2: AI d=6 a=True Type=ALPHABETA e1(regular)
+
+	 A B C D E F G H
+ 0 | . . . . . . # . 
+ 1 | . . . . . . . . 
+ 2 | . . . # . . . . 
+ 3 | # . # . . . . . 
+ 4 | # . . . . . . . 
+ 5 | . # . . . . . . 
+ 6 | . . . . . . . . 
+ 7 | . . . . . . . . 
+
+
+
+Player O under AI control has taken too long to decide.
+Player X has won!Player 1: AI d=6 a=True Type=ALPHABETA e1(regular)
+Player 2: AI d=6 a=True Type=ALPHABETA e1(regular)
+
+	 A B C D E F G H
+ 0 | . . . . . . # . 
+ 1 | . . . . . . . . 
+ 2 | . . . # . . . . 
+ 3 | # . # . . . . . 
+ 4 | # . . . . . . . 
+ 5 | . # . . . . . . 
+ 6 | . . . . . . . . 
+ 7 | . . . . . . . . 
+
+
+
+Player O under AI control has taken too long to decide.
+Player X has won!Player 1: AI d=6 a=True Type=ALPHABETAe2(defensive)
+Player 2: AI d=6 a=True Type=ALPHABETAe2(defensive)
+
+	 A B C D E F G H
+ 0 | . . . . . . # . 
+ 1 | . . . . . . . . 
+ 2 | . . . # . . . . 
+ 3 | # . # . . . . . 
+ 4 | # . . . . . . . 
+ 5 | . # . . . . . . 
+ 6 | . . . . . . . . 
+ 7 | . . . . . . . . 
+
+
+
+Player O under AI control has taken too long to decide.
+Player X has won!Player 1: AI d=6 a=True Type=ALPHABETAe2(defensive)
+Player 2: AI d=6 a=True Type=ALPHABETAe2(defensive)
+
+	 A B C D E F G H
+ 0 | . . . . . . # . 
+ 1 | . . . . . . . . 
+ 2 | . . . # . . . . 
+ 3 | # . # . . . . . 
+ 4 | # . . . . . . . 
+ 5 | . # . . . . . . 
+ 6 | . . . . . . . . 
+ 7 | . . . . . . . . 
+
+
+
+Player O under AI control has taken too long to decide.
+Player X has won!Player 1: AI d=6 a=True Type=ALPHABETAe2(defensive)
+Player 2: AI d=6 a=True Type=ALPHABETAe2(defensive)
+
+	 A B C D E F G H
+ 0 | . . . . . . # . 
+ 1 | . . . . . . . . 
+ 2 | . . . # . . . . 
+ 3 | # . # . . . . . 
+ 4 | # . . . . . . . 
+ 5 | . # . . . . . . 
+ 6 | . . . . . . . . 
+ 7 | . . . . . . . . 
+
+
+
+Player O under AI control has taken too long to decide.
+Player X has won!Player 1: AI d=6 a=True Type=ALPHABETAe2(defensive)
+Player 2: AI d=6 a=True Type=ALPHABETAe2(defensive)
+
+	 A B C D E F G H
+ 0 | . . . . . . # . 
+ 1 | . . . . . . . . 
+ 2 | . . . # . . . . 
+ 3 | # . # . . . . . 
+ 4 | # . . . . . . . 
+ 5 | . # . . . . . . 
+ 6 | . . . . . . . . 
+ 7 | . . . . . . . . 
+
+
+
+Player O under AI control has taken too long to decide.
+Player X has won!Player 1: AI d=6 a=True Type=ALPHABETAe2(defensive)
+Player 2: AI d=6 a=True Type=ALPHABETAe2(defensive)
+
+	 A B C D E F G H
+ 0 | . . . . . . # . 
+ 1 | . . . . . . . . 
+ 2 | . . . # . . . . 
+ 3 | # . # . . . . . 
+ 4 | # . . . . . . . 
+ 5 | . # . . . . . . 
+ 6 | . . . . . . . . 
+ 7 | . . . . . . . . 
+
+
+
+Player O under AI control has taken too long to decide.
+Player X has won!

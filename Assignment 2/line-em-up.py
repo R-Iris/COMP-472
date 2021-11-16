@@ -11,6 +11,7 @@ class Game:
     E1 = 4
     E2 = 5
 
+
     def __init__(self, n=3, b=0, bboard=[], s=3, d1=0, d2=0, t=0.0):
         self.n = n
         self.b = b
@@ -20,6 +21,7 @@ class Game:
         self.d2 = d2  # Max value of d2
         self.t = t  # Max value of t
         self.initialize_game()
+        self.OVERTIME = False
 
         self.winner = 'None'
 
@@ -227,6 +229,9 @@ class Game:
         miniMaxEndT = time.time()
         self.currentT = round(miniMaxEndT - self.miniMaxStartT, 7)
 
+        if self.OVERTIME:
+            return (0, 0, 0)
+
         value = 2
         if max:
             value = -2
@@ -247,15 +252,12 @@ class Game:
         for i in range(0, self.n):  # change hardcoded 3 to self.n
             for j in range(0, self.n):  # change hardcoded 3 to self.n
 
+                if self.currentT >= self.t != 0:
+                    self.OVERTIME = True
+                    return (0, 0, 0)
+
                 if depth == 0:
                     return (value, x, y)
-
-                if self.currentT >= self.t != 0:
-                    print(F'\nPlayer {self.player_turn} under AI control has taken too long to decide.'
-                          F'\nPlayer {self.switch_player()} has won!')
-                    self.file.write(F'\nPlayer {self.player_turn} under AI control has taken too long to decide.'
-                                    F'\nPlayer {self.switch_player()} has won!')
-                    exit(0)
 
                 if self.current_state[i][j] == '.':
                     if max:
@@ -299,6 +301,9 @@ class Game:
         alphaBetaEndT = time.time()
         self.currentT = round(alphaBetaEndT - self.alphaBetaStartT, 7)
 
+        if self.OVERTIME:
+            return (0, 0, 0)
+
         # Current dictionary with depths as keys and states visited as values
         if max and self.currentStatesD2 != 0:
             currentDepthDect = {depth: self.currentStatesD2}
@@ -329,13 +334,12 @@ class Game:
             # functionality for alpha-beta remains the same
             for j in range(0, self.n):
 
+                if self.currentT >= self.t != 0:
+                    self.OVERTIME = True
+                    return (0, 0, 0)
+
                 if depth == 0:
                     return (value, x, y)
-
-                if self.currentT >= self.t != 0:
-                    print(F'\nPlayer {self.player_turn} under AI control has taken too long to decide.'
-                          F'\nPlayer {self.switch_player()} has won!')
-                    exit(0)
 
                 if self.current_state[i][j] == '.':
                     if heur == self.E1:
@@ -817,7 +821,12 @@ class Game:
                     else:
                         (m, x, y) = self.alphabeta(max=True, heur=heur_o, depth=self.d2)
                 end = time.time()
-
+                if self.OVERTIME:
+                    print(F'\nPlayer {self.player_turn} under AI control has taken too long to decide.'
+                          F'\nPlayer {self.switch_player()} has won!')
+                    self.file.write(F'\nPlayer {self.player_turn} under AI control has taken too long to decide.'
+                                    F'\nPlayer {self.switch_player()} has won!')
+                    break
                 print("States checked for P1: " + str(self.currentStatesD1) + " || States checked for P2: " + str(self.currentStatesD2))
                 self.listOfTimes.append(round(end - start, 7))
                 print(F'Evaluation time: {round(end - start, 7)}s')
@@ -876,7 +885,8 @@ def main():
             avgEvalTime += round(np.array(g.listOfTimes).mean(),3)
             totalHeurEval += g.heuTOTAL
             evalByDepth.update(g.dictTOTALbyDepth)
-            avgEvalDepth += round(g.AVGStates/g.numberOfMoves, 3)
+            if g.numberOfMoves is not 0:
+                avgEvalDepth += round(g.AVGStates/g.numberOfMoves, 3)
             avgRecDepth += 0
             avgMovesPerGame += g.numberOfMoves
         # Play 1xr games with O E1 X E2
@@ -889,7 +899,8 @@ def main():
             avgEvalTime += round(np.array(g.listOfTimes).mean(),3)
             totalHeurEval += g.heuTOTAL
             evalByDepth.update(g.dictTOTALbyDepth)
-            avgEvalDepth += round(g.AVGStates/g.numberOfMoves, 3)
+            if g.numberOfMoves is not 0:
+                avgEvalDepth += round(g.AVGStates/g.numberOfMoves, 3)
             avgRecDepth += 0
             avgMovesPerGame += g.numberOfMoves
 
