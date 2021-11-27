@@ -1,59 +1,86 @@
 import gensim.downloader as api
-print("Hi")
-#googleW2VModel = api.load('word2vec-google-news-300')
-#print(str(googleW2VModel))
-#print(googleW2VModel["asdasd"])
-# with open("synonyms.csv", newline='') as synonymsCSV:
-#     reader = csv.reader(synonymsCSV, delimiter=',')
-#     next(reader)
-#     for line in reader:
-#
-#         label = ""
-#
-#         questionWord = line[0]
-#
-#         answerWords = []
-#         answerWords[0] = line[2]
-#         answerWords[1] = line[3]
-#         answerWords[2] = line[4]
-#         answerWords[3] = line[5]
-#
-#         query = []
-#         for i in range(4):
-#             if googleW2VModel[answerWords[i]]:
-#                 query.append((questionWord, answerWords[i]))
-#
-#
-#         try:
-#             googleW2VModel[questionWord]
-#
-#         except KeyError:
-#             label = "guess"
-#
-#         maxCosine = 0
-#         bestSyn = ""
-#
-#         for w1, w2 in query:
-#             try:
-#                 wordNotPresent = googleW2VModel[w1]
-#
-#             except KeyError:
-#                 print("The word(s) does not appear in this model")
-#
-#             currentCosine = googleW2VModel.similarity(w1, w2)
-#             if maxCosine < currentCosine:
-#                 maxCosine = currentCosine
-#                 bestSyn = w2
-#
-#         print(w1 + " || " + bestSyn)
-#
-#         if bestSyn == line[1]:
-#             print("Correct")
-#         else:
-#             print("Wrong")
-#             #print('%r\t%r\t%.2f' % (w1, w2, googleW2VModel.similarity(w1, w2)))
+import csv
 
 
+def synonymFinder(modelName='word2vec-google-news-300'):
+    model = api.load(modelName)
 
-#corpus = sim.docsim.MatrixSimilarity()
+    with open("synonyms.csv", newline='') as synonymsCSV:
+        reader = csv.reader(synonymsCSV, delimiter=',')
+        next(reader)
+        correctCount = 0
+        wrongCount = 0
+
+        detailsCSV = open(f'{modelName}-details.csv', "w")
+        for line in reader:
+
+            label = ""
+
+            questionWord = line[0]
+            correctWord = line[1]
+            answerWords = []
+            answerWords.append(line[2])
+            answerWords.append(line[3])
+            answerWords.append(line[4])
+            answerWords.append(line[5])
+
+            query = []
+            try:
+                model[questionWord]
+            except KeyError:
+                print(f'The word {questionWord} does not appear in this model')
+                label = "guess"
+
+            for i in range(4):
+                try:
+                    model[answerWords[i]]
+                    query.append((questionWord, answerWords[i]))
+                except KeyError:
+                    print(f'The word {answerWords[i]} does not appear in this model')
+                    pass
+
+            if not query:
+                label = "guess"
+
+            maxCosine = 0
+            bestSyn = "None"
+            if label != "guess":
+
+                for w1, w2 in query:
+                    currentCosine = model.similarity(w1, w2)
+                    if maxCosine < currentCosine:
+                        maxCosine = currentCosine
+                        bestSyn = w2
+
+                if bestSyn == correctWord:
+                    label = "correct"
+                    correctCount = correctCount + 1
+                else:
+                    label = "wrong"
+                    wrongCount = wrongCount + 1
+            # task 1 part 1. details csv
+            detailsCSV.write(f'{questionWord},{correctWord},{bestSyn},{label}\n')
+        detailsCSV.close()
+
+        # task 1 part 2. analysis csv
+        analysisCSV = open("analysis.csv", "a")
+        if wrongCount == 0:
+            wrongCount = 1
+        analysisCSV.write(f'{modelName},{len(model)},{correctCount},{correctCount + wrongCount},'
+                          f'{correctCount / float(correctCount + wrongCount)}\n')
+        analysisCSV.close()
+
+    # closing the synonym csv file
+    synonymsCSV.close()
+
+
+if __name__ == '__main__':
+    # part 1
+    # synonymFinder('word2vec-google-news-300')
+    # part 2    1:
+    # synonymFinder('glove-twitter-50')
+    # synonymFinder('glove-wiki-gigaword-50')
+    # # part 2    2:
+    # synonymFinder('glove-wiki-gigaword-100')
+    synonymFinder('glove-wiki-gigaword-300')
 
