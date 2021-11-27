@@ -1,5 +1,6 @@
 import gensim.downloader as api
 import csv
+import matplotlib.pyplot as plt
 
 
 def synonymFinder(modelName='word2vec-google-news-300'):
@@ -74,6 +75,29 @@ def synonymFinder(modelName='word2vec-google-news-300'):
     synonymsCSV.close()
 
 
+def graphMaker():
+    with open("analysis.csv", newline='') as analysisFile:
+        reader = csv.reader(analysisFile, delimiter=',')
+        xaxisLabel = []
+        accuracy = []
+
+        for line in reader:
+            xaxisLabel.append(line[0])
+            accuracy.append(round(float(line[4]) * 100, 2))
+
+    analysisFile.close()
+
+    plt.bar(xaxisLabel, accuracy)
+    plt.xticks(fontsize=9, rotation=7.5, wrap=True)
+    plt.xlabel('Model')
+    plt.ylabel('Accuracy')
+    plt.title('Accuracy Distribution')
+    plt.savefig("accuracy-distribution.pdf")
+
+    # Needs to be compared to a random baseline(?)
+    # Needs to be compared to a human gold-standard -> we need to wait for this
+
+
 if __name__ == '__main__':
     # part 1
     # synonymFinder('word2vec-google-news-300')
@@ -82,5 +106,5 @@ if __name__ == '__main__':
     # synonymFinder('glove-wiki-gigaword-50')
     # # part 2    2:
     # synonymFinder('glove-wiki-gigaword-100')
-    synonymFinder('glove-wiki-gigaword-300')
-
+    # synonymFinder('glove-wiki-gigaword-300')
+    graphMaker()
