@@ -84,7 +84,8 @@ def graphMaker():
         for line in reader:
             xaxisLabel.append(line[0])
             accuracy.append(round(float(line[4]) * 100, 2))
-
+        xaxisLabel.append("Crowd Sourced")
+        accuracy.append(85.57)
     analysisFile.close()
 
     plt.bar(xaxisLabel, accuracy)
