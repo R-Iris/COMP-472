@@ -8,4 +8,4 @@ Among different libraries, we used **sklearn** the most. We used a Gaussian Naiv
 Created a game similar to tic-tac-toe where a player could play against an AI. The AI could use different algorithms and "homemade" heuristics. AI vs AI was also possible. Various parameteres were used to compare the effectiveness between algorithms and heuristics.
 
 # Assingmnet 3
-Created an AI that would find a synonym to the word given using different models (glove-wiki-gigaword-100, glove-twitter-50, word2vec-google-news-300, etc.) Various parameters wre used to compare the effectiveness between the models.
+Created an AI that would find a synonym to the word given using different models (glove-wiki-gigaword-100, glove-twitter-50, word2vec-google-news-300, etc.) Various parameters were used to compare the effectiveness between the models.
